@@ -23,7 +23,6 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         html { scroll-behavior: smooth; }
 
         body {
@@ -33,14 +32,23 @@
           overflow-x: hidden;
         }
 
-        /* Kolam Pattern Background */
+        /* ===== THREE.JS CANVAS ===== */
+        #three-canvas {
+          position: fixed;
+          top: 0; left: 0;
+          width: 100%; height: 100%;
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        /* ===== Kolam dot background ===== */
         .kolam-bg {
           position: fixed;
           top: 0; left: 0;
           width: 100%; height: 100%;
           pointer-events: none;
           z-index: 0;
-          opacity: 0.04;
+          opacity: 0.03;
           background-image:
             radial-gradient(circle at 25% 25%, var(--maroon) 1px, transparent 1px),
             radial-gradient(circle at 75% 75%, var(--maroon) 1px, transparent 1px),
@@ -48,1084 +56,395 @@
           background-size: 40px 40px, 40px 40px, 80px 80px;
         }
 
-        /* Floating Flower Petals */
-        .petal {
-          position: fixed;
-          width: 12px;
-          height: 12px;
-          border-radius: 50% 0 50% 0;
-          opacity: 0;
-          pointer-events: none;
-          z-index: 1;
-          animation: petalFall linear infinite;
-        }
-
-        @keyframes petalFall {
-          0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
-          10% { opacity: 0.7; }
-          90% { opacity: 0.5; }
-          100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-        }
-
-        /* Mango Leaf Border Top */
+        /* Mango Leaf Border */
         .mango-border {
-          position: relative;
-          width: 100%;
-          height: 60px;
-          overflow: hidden;
+          position: relative; width: 100%; height: 60px; overflow: hidden;
           background: linear-gradient(180deg, var(--green) 0%, transparent 100%);
-          display: flex;
-          justify-content: center;
-          align-items: flex-start;
+          display: flex; justify-content: center; align-items: flex-start;
           z-index: 10;
         }
-
-        .mango-string {
-          display: flex;
-          gap: 0;
-          justify-content: center;
-          flex-wrap: nowrap;
-          padding-top: 4px;
-        }
-
+        .mango-string { display: flex; gap: 0; justify-content: center; flex-wrap: nowrap; padding-top: 4px; }
         .mango-leaf {
-          width: 22px;
-          height: 38px;
-          background: var(--green);
-          border-radius: 0 50% 50% 0;
-          transform-origin: top center;
-          animation: swayLeaf 3s ease-in-out infinite;
-          position: relative;
+          width: 22px; height: 38px; background: var(--green);
+          border-radius: 0 50% 50% 0; transform-origin: top center;
+          animation: swayLeaf 3s ease-in-out infinite; position: relative;
         }
-
         .mango-leaf:nth-child(odd) {
-          background: #3A8F4A;
-          border-radius: 50% 0 0 50%;
-          animation-delay: -1.5s;
+          background: #3A8F4A; border-radius: 50% 0 0 50%; animation-delay: -1.5s;
         }
-
         .mango-leaf::after {
-          content: '';
-          position: absolute;
-          width: 1px;
-          height: 80%;
-          background: rgba(255,255,255,0.3);
-          top: 10%;
-          left: 50%;
+          content: ''; position: absolute; width: 1px; height: 80%;
+          background: rgba(255,255,255,0.3); top: 10%; left: 50%;
         }
+        @keyframes swayLeaf { 0%,100%{transform:rotate(-5deg)} 50%{transform:rotate(5deg)} }
 
-        @keyframes swayLeaf {
-          0%, 100% { transform: rotate(-5deg); }
-          50% { transform: rotate(5deg); }
+        /* Floating Petals */
+        .petal {
+          position: fixed; border-radius: 50% 0 50% 0;
+          opacity: 0; pointer-events: none; z-index: 1;
+          animation: petalFall linear infinite;
+        }
+        @keyframes petalFall {
+          0%{transform:translateY(-20px) rotate(0deg);opacity:0}
+          10%{opacity:0.7} 90%{opacity:0.5}
+          100%{transform:translateY(100vh) rotate(720deg);opacity:0}
         }
 
         /* Hero Section */
         .hero {
           min-height: 100vh;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
+          display: flex; flex-direction: column;
+          align-items: center; justify-content: center;
           position: relative;
+          padding: 40px 20px; text-align: center;
+          background: transparent;
+        }
+
+        .hero::before {
+          content: '';
+          position: absolute; inset: 0;
           background:
-            radial-gradient(ellipse at 50% 30%, rgba(201,168,76,0.15) 0%, transparent 60%),
-            radial-gradient(ellipse at 20% 80%, rgba(26,58,107,0.08) 0%, transparent 50%),
-            radial-gradient(ellipse at 80% 80%, rgba(26,58,107,0.08) 0%, transparent 50%),
-            var(--cream);
-          padding: 40px 20px;
-          text-align: center;
+            radial-gradient(ellipse at 50% 30%, rgba(201,168,76,0.12) 0%, transparent 60%),
+            radial-gradient(ellipse at 20% 80%, rgba(26,58,107,0.06) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 80%, rgba(26,58,107,0.06) 0%, transparent 50%);
+          pointer-events: none;
         }
 
         /* Ornamental Frame */
         .ornament-frame {
-          position: relative;
-          padding: 60px 40px;
-          max-width: 700px;
-          width: 100%;
+          position: relative; padding: 60px 40px;
+          max-width: 700px; width: 100%;
           animation: fadeInUp 1.5s ease-out;
+          background: rgba(239,244,251,0.7);
+          border-radius: 20px;
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          box-shadow: 0 20px 60px rgba(14,34,72,0.12), 0 0 0 1px rgba(201,168,76,0.15);
         }
 
-        .ornament-frame::before,
-        .ornament-frame::after {
-          content: '';
-          position: absolute;
-          width: 120px;
-          height: 120px;
-          border: 3px solid var(--gold);
-          opacity: 0.6;
+        .ornament-frame::before, .ornament-frame::after {
+          content: ''; position: absolute;
+          width: 120px; height: 120px; border: 3px solid var(--gold); opacity: 0.6;
         }
+        .ornament-frame::before { top:0; left:0; border-right:none; border-bottom:none; border-radius:10px 0 0 0; }
+        .ornament-frame::after { bottom:0; right:0; border-left:none; border-top:none; border-radius:0 0 10px 0; }
+        .corner-tr,.corner-bl { position:absolute; width:120px; height:120px; border:3px solid var(--gold); opacity:0.6; }
+        .corner-tr { top:0; right:0; border-left:none; border-bottom:none; border-radius:0 10px 0 0; }
+        .corner-bl { bottom:0; left:0; border-right:none; border-top:none; border-radius:0 0 0 10px; }
 
-        .ornament-frame::before {
-          top: 0; left: 0;
-          border-right: none; border-bottom: none;
-          border-radius: 10px 0 0 0;
-        }
-
-        .ornament-frame::after {
-          bottom: 0; right: 0;
-          border-left: none; border-top: none;
-          border-radius: 0 0 10px 0;
-        }
-
-        .corner-tr, .corner-bl {
-          position: absolute;
-          width: 120px;
-          height: 120px;
-          border: 3px solid var(--gold);
-          opacity: 0.6;
-        }
-
-        .corner-tr {
-          top: 0; right: 0;
-          border-left: none; border-bottom: none;
-          border-radius: 0 10px 0 0;
-        }
-
-        .corner-bl {
-          bottom: 0; left: 0;
-          border-right: none; border-top: none;
-          border-radius: 0 0 0 10px;
-        }
-
-        /* Om / Pillayar Suzhi */
         .pillayar-suzhi {
-          font-family: 'Noto Serif Tamil', serif;
-          font-size: 3rem;
-          color: var(--maroon);
-          margin-bottom: 10px;
+          font-family: 'Noto Serif Tamil', serif; font-size: 3rem;
+          color: var(--maroon); margin-bottom: 10px;
           animation: glowPulse 3s ease-in-out infinite;
-          text-shadow: 0 0 20px rgba(26,58,107,0.3);
         }
-
         @keyframes glowPulse {
-          0%, 100% { text-shadow: 0 0 20px rgba(26,58,107,0.2); }
-          50% { text-shadow: 0 0 40px rgba(26,58,107,0.5), 0 0 80px rgba(201,168,76,0.2); }
-        }
-
-        .tamil-blessing {
-          font-family: 'Noto Serif Tamil', serif;
-          font-size: 1.1rem;
-          color: var(--maroon);
-          margin-bottom: 5px;
-          letter-spacing: 1px;
-          opacity: 0;
-          animation: fadeInUp 1s ease-out 0.3s forwards;
-        }
-
-        .subtext-eng {
-          font-size: 0.9rem;
-          color: var(--gold-dark);
-          font-style: italic;
-          margin-bottom: 30px;
-          opacity: 0;
-          animation: fadeInUp 1s ease-out 0.5s forwards;
+          0%,100%{text-shadow:0 0 20px rgba(26,58,107,0.2)}
+          50%{text-shadow:0 0 40px rgba(26,58,107,0.5),0 0 80px rgba(201,168,76,0.2)}
         }
 
         .divider-line {
-          width: 200px;
-          height: 2px;
+          width: 200px; height: 2px;
           background: linear-gradient(90deg, transparent, var(--gold), transparent);
           margin: 15px auto;
         }
 
-        .invite-text {
-          font-size: 1rem;
-          color: var(--text-dark);
-          margin-bottom: 5px;
-          opacity: 0;
-          animation: fadeInUp 1s ease-out 0.7s forwards;
-        }
-
-        .invite-tamil {
-          font-family: 'Noto Serif Tamil', serif;
-          font-size: 1.05rem;
-          color: var(--maroon-deep);
-          margin-bottom: 20px;
-          opacity: 0;
-          animation: fadeInUp 1s ease-out 0.8s forwards;
-        }
-
-        .couple-names {
-          margin: 20px 0;
-          opacity: 0;
-          animation: fadeInScale 1.2s ease-out 1s forwards;
-        }
-
-        .groom-name, .bride-name {
-          font-family: 'Great Vibes', cursive;
-          font-size: 3.5rem;
-          color: var(--maroon);
-          line-height: 1.2;
+        .couple-names { margin: 20px 0; opacity:0; animation: fadeInScale 1.2s ease-out 1s forwards; }
+        .groom-name,.bride-name {
+          font-family: 'Great Vibes', cursive; font-size: 3.5rem;
+          color: var(--maroon); line-height: 1.2;
           text-shadow: 2px 2px 4px rgba(26,58,107,0.15);
         }
+        .couple-names-tamil { font-family:'Noto Serif Tamil',serif; font-size:1.6rem; color:var(--gold-dark); margin-top:5px; }
+        .ampersand { font-family:'Great Vibes',cursive; font-size:2.5rem; color:var(--gold); display:block; margin:-5px 0; }
 
-        .couple-names-tamil {
-          font-family: 'Noto Serif Tamil', serif;
-          font-size: 1.6rem;
-          color: var(--gold-dark);
-          margin-top: 5px;
-        }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes fadeInScale { from{opacity:0;transform:scale(0.8)} to{opacity:1;transform:scale(1)} }
 
-        .ampersand {
-          font-family: 'Great Vibes', cursive;
-          font-size: 2.5rem;
-          color: var(--gold);
-          display: block;
-          margin: -5px 0;
-        }
-
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInScale {
-          from { opacity: 0; transform: scale(0.8); }
-          to { opacity: 1; transform: scale(1); }
-        }
-
-        /* Kolam Divider */
         .kolam-divider {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 15px;
-          margin: 30px 0;
-          opacity: 0;
-          animation: fadeInUp 1s ease-out 1.2s forwards;
+          display:flex; align-items:center; justify-content:center; gap:15px;
+          margin:30px 0; opacity:0; animation:fadeInUp 1s ease-out 1.2s forwards;
+        }
+        .kolam-dot { width:8px;height:8px;background:var(--gold);border-radius:50%; }
+        .kolam-diamond { width:14px;height:14px;background:var(--maroon);transform:rotate(45deg); }
+        .kolam-line { width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+
+        .invite-text {
+          font-size:1rem;color:var(--text-dark);margin-bottom:5px;
+          opacity:0;animation:fadeInUp 1s ease-out 0.7s forwards;
+        }
+        .invite-tamil {
+          font-family:'Noto Serif Tamil',serif;font-size:1.05rem;color:var(--maroon-deep);
+          margin-bottom:20px;opacity:0;animation:fadeInUp 1s ease-out 0.8s forwards;
         }
 
-        .kolam-dot {
-          width: 8px; height: 8px;
-          background: var(--gold);
-          border-radius: 50%;
+        /* United by Love */
+        .united-section { margin:20px 0;opacity:0;animation:fadeInUp 1s ease-out 0.7s forwards; }
+        .united-hearts { display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px; }
+        .united-heart { font-size:1.2rem;animation:heartBeat 2s ease-in-out infinite; }
+        .united-heart:nth-child(1){animation-delay:0s} .united-heart:nth-child(3){animation-delay:0.3s}
+        @keyframes heartBeat { 0%,100%{transform:scale(1)} 15%{transform:scale(1.25)} 30%{transform:scale(1)} }
+        .united-title {
+          font-family:'Great Vibes',cursive;font-size:2.2rem;color:var(--maroon);line-height:1.2;
+          background:linear-gradient(135deg,var(--maroon),var(--gold-dark),var(--maroon));
+          -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
         }
+        .united-tamil { font-family:'Noto Serif Tamil',serif;font-size:1rem;color:var(--gold-dark);margin-top:4px; }
+        .united-eng { font-size:0.9rem;color:var(--text-dark);font-style:italic;margin-top:4px; }
 
-        .kolam-diamond {
-          width: 14px; height: 14px;
-          background: var(--maroon);
-          transform: rotate(45deg);
-        }
-
-        .kolam-line {
-          width: 60px; height: 1px;
-          background: linear-gradient(90deg, transparent, var(--gold), transparent);
-        }
-
-        /* Event Cards Section */
+        /* ===== EVENTS SECTION ===== */
         .events-section {
-          padding: 60px 20px;
-          background:
-            linear-gradient(180deg, var(--cream) 0%, var(--cream-dark) 50%, var(--cream) 100%);
-          position: relative;
-          z-index: 2;
+          padding: 80px 20px;
+          position: relative; z-index: 2;
+          background: linear-gradient(180deg, rgba(239,244,251,0.9) 0%, rgba(214,227,245,0.95) 50%, rgba(239,244,251,0.9) 100%);
         }
 
-        .section-title {
-          text-align: center;
-          font-family: 'Playfair Display', serif;
-          font-size: 2.2rem;
-          color: var(--maroon);
-          margin-bottom: 5px;
-        }
-
-        .section-title-tamil {
-          text-align: center;
-          font-family: 'Noto Serif Tamil', serif;
-          font-size: 1.3rem;
-          color: var(--gold-dark);
-          margin-bottom: 40px;
-        }
+        .section-title { text-align:center;font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--maroon);margin-bottom:5px; }
+        .section-title-tamil { text-align:center;font-family:'Noto Serif Tamil',serif;font-size:1.3rem;color:var(--gold-dark);margin-bottom:40px; }
 
         .events-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 30px;
-          max-width: 900px;
-          margin: 0 auto;
+          display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+          gap:30px;max-width:900px;margin:0 auto;
         }
 
         .event-card {
-          background: var(--white);
-          border-radius: 16px;
-          padding: 40px 30px;
-          text-align: center;
-          position: relative;
-          overflow: hidden;
-          box-shadow: 0 8px 30px rgba(26,58,107,0.08), 0 2px 8px rgba(0,0,0,0.04);
-          border: 1px solid rgba(201,168,76,0.2);
-          opacity: 0;
-          transform: translateY(40px);
-          transition: all 0.8s ease-out;
+          background: rgba(247,250,255,0.9);
+          border-radius:16px;padding:40px 30px;text-align:center;
+          position:relative;overflow:hidden;
+          box-shadow:0 8px 30px rgba(26,58,107,0.08),0 2px 8px rgba(0,0,0,0.04);
+          border:1px solid rgba(201,168,76,0.2);
+          opacity:0;transform:translateY(40px);transition:all 0.8s ease-out;
+          backdrop-filter: blur(8px);
         }
-
-        .event-card.visible {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
+        .event-card.visible { opacity:1;transform:translateY(0); }
         .event-card::before {
-          content: '';
-          position: absolute;
-          top: 0; left: 0; right: 0;
-          height: 4px;
-          background: linear-gradient(90deg, var(--maroon), var(--gold), var(--maroon));
+          content:'';position:absolute;top:0;left:0;right:0;height:4px;
+          background:linear-gradient(90deg,var(--maroon),var(--gold),var(--maroon));
         }
-
-        .event-card::after {
-          content: '';
-          position: absolute;
-          bottom: -50%; right: -50%;
-          width: 100%; height: 100%;
-          background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
-          pointer-events: none;
-        }
-
-        .event-icon {
-          font-size: 2.5rem;
-          margin-bottom: 15px;
-        }
-
-        .event-type {
-          font-family: 'Playfair Display', serif;
-          font-size: 1.6rem;
-          color: var(--maroon);
-          margin-bottom: 3px;
-        }
-
-        .event-type-tamil {
-          font-family: 'Noto Serif Tamil', serif;
-          font-size: 1.1rem;
-          color: var(--gold-dark);
-          margin-bottom: 20px;
-        }
-
-        .event-date {
-          font-family: 'Playfair Display', serif;
-          font-size: 1.3rem;
-          color: var(--text-dark);
-          font-weight: 700;
-        }
-
-        .event-date-tamil {
-          font-family: 'Noto Serif Tamil', serif;
-          font-size: 0.95rem;
-          color: var(--maroon);
-          margin-top: 4px;
-        }
-
-        .event-time {
-          font-size: 1.1rem;
-          color: var(--gold-dark);
-          margin-top: 10px;
-          font-weight: 600;
-        }
-
+        .event-card:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(26,58,107,0.15); }
+        .event-icon { font-size:2.5rem;margin-bottom:15px; }
+        .event-type { font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--maroon);margin-bottom:3px; }
+        .event-type-tamil { font-family:'Noto Serif Tamil',serif;font-size:1.1rem;color:var(--gold-dark);margin-bottom:20px; }
+        .event-date { font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--text-dark);font-weight:700; }
+        .event-date-tamil { font-family:'Noto Serif Tamil',serif;font-size:0.95rem;color:var(--maroon);margin-top:4px; }
+        .event-time { font-size:1.1rem;color:var(--gold-dark);margin-top:10px;font-weight:600; }
         .muhurtham {
-          display: inline-block;
-          background: linear-gradient(135deg, var(--maroon), var(--maroon-deep));
-          color: var(--gold-light);
-          padding: 6px 20px;
-          border-radius: 30px;
-          font-size: 0.85rem;
-          margin-top: 12px;
-          letter-spacing: 1px;
-          text-transform: uppercase;
+          display:inline-block;background:linear-gradient(135deg,var(--maroon),var(--maroon-deep));
+          color:var(--gold-light);padding:6px 20px;border-radius:30px;
+          font-size:0.85rem;margin-top:12px;letter-spacing:1px;text-transform:uppercase;
         }
 
-        /* Countdown Section */
+        /* ===== COUNTDOWN ===== */
         .countdown-section {
-          padding: 60px 20px;
-          background:
-            linear-gradient(135deg, var(--maroon-deep) 0%, var(--maroon) 50%, #15365E 100%);
-          text-align: center;
+          padding:60px 20px;
+          background:linear-gradient(135deg,var(--maroon-deep) 0%,var(--maroon) 50%,#15365E 100%);
+          text-align:center;position:relative;z-index:2;overflow:hidden;
+        }
+        .countdown-section::before {
+          content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+          background:radial-gradient(circle at 20% 50%,rgba(201,168,76,0.1) 0%,transparent 50%),
+                     radial-gradient(circle at 80% 50%,rgba(201,168,76,0.1) 0%,transparent 50%);
+          pointer-events:none;
+        }
+        .countdown-title { font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--gold-light);margin-bottom:5px;position:relative; }
+        .countdown-title-tamil { font-family:'Noto Serif Tamil',serif;font-size:1.1rem;color:var(--gold);margin-bottom:30px;position:relative; }
+        .countdown-grid { display:flex;justify-content:center;gap:20px;flex-wrap:wrap;position:relative; }
+        .countdown-item {
+          background:rgba(255,255,255,0.08);border:1px solid rgba(201,168,76,0.3);
+          border-radius:16px;padding:25px 20px;min-width:100px;
+          backdrop-filter:blur(5px);transition:transform 0.3s ease;
+        }
+        .countdown-item:hover { transform:translateY(-5px); }
+        .countdown-number { font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:var(--gold-light);line-height:1; }
+        .countdown-label { font-size:0.85rem;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:2px;margin-top:5px; }
+        .countdown-label-tamil { font-family:'Noto Serif Tamil',serif;font-size:0.8rem;color:var(--gold);margin-top:2px; }
+
+        /* ===== VENUE ===== */
+        .venue-section { padding:60px 20px;background:rgba(239,244,251,0.95);text-align:center;position:relative;z-index:2; }
+        .venue-card {
+          max-width:600px;margin:0 auto;
+          background:rgba(247,250,255,0.95);border-radius:20px;padding:40px 30px;
+          box-shadow:0 10px 40px rgba(26,58,107,0.08);border:1px solid rgba(201,168,76,0.2);
+          opacity:0;transform:translateY(40px);transition:all 0.8s ease-out;
+          backdrop-filter:blur(8px);
+        }
+        .venue-card.visible { opacity:1;transform:translateY(0); }
+        .venue-title { font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--maroon);margin-bottom:15px; }
+        .venue-text { font-size:1rem;color:var(--text-dark);line-height:1.8;margin-bottom:25px; }
+        .venue-text-tamil { font-family:'Noto Serif Tamil',serif;font-size:0.95rem;color:var(--maroon);margin-bottom:20px; }
+        .qr-container {
+          display:inline-block;padding:15px;background:white;border-radius:12px;
+          box-shadow:0 4px 15px rgba(0,0,0,0.08);border:2px solid var(--gold);margin-bottom:15px;
+        }
+        .qr-container canvas { display:block; }
+        .map-link {
+          display:inline-block;background:linear-gradient(135deg,var(--maroon),var(--maroon-deep));
+          color:var(--gold-light);text-decoration:none;padding:12px 30px;border-radius:30px;
+          font-family:'Playfair Display',serif;font-size:1rem;letter-spacing:1px;
+          transition:all 0.3s ease;margin-top:10px;
+        }
+        .map-link:hover { transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,58,107,0.3); }
+
+        /* ===== BLESSINGS ===== */
+        .blessings-section { padding:60px 20px;background:linear-gradient(180deg,rgba(214,227,245,0.95),rgba(239,244,251,0.95));text-align:center;position:relative;z-index:2; }
+        .blessing-quote { max-width:650px;margin:0 auto;opacity:0;transform:translateY(30px);transition:all 0.8s ease-out; }
+        .blessing-quote.visible { opacity:1;transform:translateY(0); }
+        .thirukkural { font-family:'Noto Serif Tamil',serif;font-size:1.4rem;color:var(--maroon);line-height:2;margin-bottom:10px;text-align:left; }
+        .thirukkural-eng { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--gold-dark);margin-bottom:8px;text-align:left; }
+        .thirukkural-ref { font-size:0.85rem;color:var(--maroon);opacity:0.6;text-align:left; }
+
+        /* ===== DOWNLOAD ===== */
+        .download-section { padding:50px 20px;background:rgba(239,244,251,0.95);text-align:center;position:relative;z-index:2; }
+        .download-btn {
+          display:inline-flex;align-items:center;gap:10px;
+          background:linear-gradient(135deg,var(--maroon),var(--maroon-deep));
+          color:var(--gold-light);border:2px solid var(--gold);padding:16px 40px;border-radius:50px;
+          font-family:'Playfair Display',serif;font-size:1.1rem;letter-spacing:1px;
+          cursor:pointer;transition:all 0.4s ease;text-decoration:none;
+          box-shadow:0 4px 20px rgba(26,58,107,0.2);animation:btnPulse 3s ease-in-out infinite;
+        }
+        .download-btn:hover { transform:translateY(-3px) scale(1.03);box-shadow:0 8px 30px rgba(26,58,107,0.35); }
+        @keyframes btnPulse {
+          0%,100%{box-shadow:0 4px 20px rgba(26,58,107,0.2)}
+          50%{box-shadow:0 4px 30px rgba(201,168,76,0.35),0 0 15px rgba(201,168,76,0.15)}
+        }
+        .download-subtitle { font-family:'Noto Serif Tamil',serif;font-size:0.9rem;color:var(--gold-dark);margin-top:12px; }
+        .download-loading { display:none;margin-top:15px;font-family:'Cormorant Garamond',serif;font-size:0.95rem;color:var(--maroon); }
+        .download-loading .spinner {
+          display:inline-block;width:18px;height:18px;border:2px solid var(--gold);
+          border-top-color:var(--maroon);border-radius:50%;animation:spin 0.8s linear infinite;
+          vertical-align:middle;margin-right:8px;
+        }
+        @keyframes spin { to{transform:rotate(360deg)} }
+
+        /* ===== FOOTER ===== */
+        .footer { padding:40px 20px;background:linear-gradient(135deg,var(--maroon-deep),var(--maroon));text-align:center;position:relative;z-index:2; }
+        .footer-text { font-family:'Great Vibes',cursive;font-size:2rem;color:var(--gold-light);margin-bottom:10px; }
+        .footer-tamil { font-family:'Noto Serif Tamil',serif;font-size:1rem;color:var(--gold);margin-bottom:10px; }
+        .footer-names { font-family:'Playfair Display',serif;font-size:1.1rem;color:rgba(255,255,255,0.7);letter-spacing:3px; }
+
+        /* Scroll reveal */
+        .scroll-reveal { opacity:0;transform:translateY(30px);transition:all 0.8s ease-out; }
+        .scroll-reveal.visible { opacity:1;transform:translateY(0); }
+
+        /* ===== MUSIC ===== */
+        .music-toggle {
+          position:fixed;bottom:25px;right:25px;width:56px;height:56px;border-radius:50%;
+          background:linear-gradient(135deg,var(--maroon),var(--maroon-deep));
+          border:2px solid var(--gold);color:var(--gold-light);font-size:1.4rem;cursor:pointer;
+          z-index:100;display:flex;align-items:center;justify-content:center;
+          box-shadow:0 4px 20px rgba(26,58,107,0.3);transition:all 0.3s ease;
+        }
+        .music-toggle:hover { transform:scale(1.1); }
+        .music-toggle.playing { animation:musicPulse 1.5s ease-in-out infinite; }
+        @keyframes musicPulse {
+          0%,100%{box-shadow:0 4px 20px rgba(26,58,107,0.3)}
+          50%{box-shadow:0 4px 30px rgba(201,168,76,0.5),0 0 20px rgba(201,168,76,0.2)}
+        }
+        .music-label {
+          position:fixed;bottom:32px;right:90px;background:var(--maroon);color:var(--gold-light);
+          padding:8px 16px;border-radius:20px;font-size:0.8rem;font-family:'Cormorant Garamond',serif;
+          white-space:nowrap;z-index:100;opacity:0;transform:translateX(10px);
+          transition:all 0.4s ease;pointer-events:none;border:1px solid rgba(201,168,76,0.3);
+        }
+        .music-label.show { opacity:1;transform:translateX(0); }
+
+        /* ===== SPLASH SCREEN ===== */
+        .splash-overlay {
+          position:fixed;top:0;left:0;width:100%;height:100%;
+          background:radial-gradient(ellipse at center,rgba(14,34,72,0.97),rgba(14,34,72,0.99));
+          z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;
+          transition:opacity 0.8s ease,visibility 0.8s ease;
+        }
+        .splash-overlay.hidden { opacity:0;visibility:hidden;pointer-events:none; }
+        .splash-text { font-family:'Great Vibes',cursive;font-size:2.5rem;color:var(--gold-light);margin-bottom:10px;animation:fadeInUp 1s ease-out; }
+        .splash-names { font-family:'Great Vibes',cursive;font-size:3.5rem;color:var(--gold-light);margin-bottom:5px;animation:fadeInScale 1.2s ease-out 0.2s both; }
+        .splash-date { font-family:'Playfair Display',serif;font-size:1rem;color:rgba(255,255,255,0.5);letter-spacing:4px;margin-bottom:10px;animation:fadeInUp 1s ease-out 0.4s both; }
+        .splash-tamil { font-family:'Noto Serif Tamil',serif;font-size:1.2rem;color:var(--gold);margin-bottom:40px;animation:fadeInUp 1s ease-out 0.5s both; }
+        .splash-btn {
+          background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+          color:var(--maroon-deep);border:none;padding:16px 50px;border-radius:50px;
+          font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;cursor:pointer;
+          letter-spacing:2px;transition:all 0.3s ease;animation:fadeInUp 1s ease-out 0.6s both;
+          box-shadow:0 4px 25px rgba(201,168,76,0.4);
+        }
+        .splash-btn:hover { transform:translateY(-3px) scale(1.05);box-shadow:0 8px 35px rgba(201,168,76,0.6); }
+
+        /* 3D Section Banner */
+        .three-banner {
+          height: 200px;
           position: relative;
           z-index: 2;
           overflow: hidden;
+          background: transparent;
+          display: flex; align-items: center; justify-content: center;
         }
-
-        .countdown-section::before {
-          content: '';
-          position: absolute;
-          top: 0; left: 0; right: 0; bottom: 0;
-          background:
-            radial-gradient(circle at 20% 50%, rgba(201,168,76,0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 50%, rgba(201,168,76,0.1) 0%, transparent 50%);
-          pointer-events: none;
-        }
-
-        .countdown-title {
-          font-family: 'Playfair Display', serif;
-          font-size: 1.8rem;
-          color: var(--gold-light);
-          margin-bottom: 5px;
-          position: relative;
-        }
-
-        .countdown-title-tamil {
-          font-family: 'Noto Serif Tamil', serif;
-          font-size: 1.1rem;
-          color: var(--gold);
-          margin-bottom: 30px;
-          position: relative;
-        }
-
-        .countdown-grid {
-          display: flex;
-          justify-content: center;
-          gap: 20px;
-          flex-wrap: wrap;
-          position: relative;
-        }
-
-        .countdown-item {
-          background: rgba(255,255,255,0.08);
-          border: 1px solid rgba(201,168,76,0.3);
-          border-radius: 16px;
-          padding: 25px 20px;
-          min-width: 100px;
-          backdrop-filter: blur(5px);
-          transition: transform 0.3s ease;
-        }
-
-        .countdown-item:hover {
-          transform: translateY(-5px);
-        }
-
-        .countdown-number {
-          font-family: 'Playfair Display', serif;
-          font-size: 3rem;
-          font-weight: 900;
-          color: var(--gold-light);
-          line-height: 1;
-        }
-
-        .countdown-label {
-          font-size: 0.85rem;
-          color: rgba(255,255,255,0.7);
-          text-transform: uppercase;
-          letter-spacing: 2px;
-          margin-top: 5px;
-        }
-
-        .countdown-label-tamil {
-          font-family: 'Noto Serif Tamil', serif;
-          font-size: 0.8rem;
-          color: var(--gold);
-          margin-top: 2px;
-        }
-
-        /* Venue / QR Section */
-        .venue-section {
-          padding: 60px 20px;
-          background: var(--cream);
-          text-align: center;
-          position: relative;
-          z-index: 2;
-        }
-
-        .venue-card {
-          max-width: 600px;
-          margin: 0 auto;
-          background: var(--white);
-          border-radius: 20px;
-          padding: 40px 30px;
-          box-shadow: 0 10px 40px rgba(26,58,107,0.08);
-          border: 1px solid rgba(201,168,76,0.2);
-          opacity: 0;
-          transform: translateY(40px);
-          transition: all 0.8s ease-out;
-        }
-
-        .venue-card.visible {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        .venue-title {
-          font-family: 'Playfair Display', serif;
-          font-size: 1.5rem;
-          color: var(--maroon);
-          margin-bottom: 15px;
-        }
-
-        .venue-text {
-          font-size: 1rem;
-          color: var(--text-dark);
-          line-height: 1.8;
-          margin-bottom: 25px;
-        }
-
-        .venue-text-tamil {
-          font-family: 'Noto Serif Tamil', serif;
-          font-size: 0.95rem;
-          color: var(--maroon);
-          margin-bottom: 20px;
-        }
-
-        .qr-container {
-          display: inline-block;
-          padding: 15px;
-          background: white;
-          border-radius: 12px;
-          box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-          border: 2px solid var(--gold);
-          margin-bottom: 15px;
-        }
-
-        .qr-container canvas {
-          display: block;
-        }
-
-        .map-link {
-          display: inline-block;
-          background: linear-gradient(135deg, var(--maroon), var(--maroon-deep));
-          color: var(--gold-light);
-          text-decoration: none;
-          padding: 12px 30px;
-          border-radius: 30px;
-          font-family: 'Playfair Display', serif;
-          font-size: 1rem;
-          letter-spacing: 1px;
-          transition: all 0.3s ease;
-          margin-top: 10px;
-        }
-
-        .map-link:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(26,58,107,0.3);
-        }
-
-        /* Blessings / Quote Section */
-        .blessings-section {
-          padding: 60px 20px;
-          background: linear-gradient(180deg, var(--cream-dark), var(--cream));
-          text-align: center;
-          position: relative;
-          z-index: 2;
-        }
-
-        .blessing-quote {
-          max-width: 650px;
-          margin: 0 auto;
-          opacity: 0;
-          transform: translateY(30px);
-          transition: all 0.8s ease-out;
-        }
-
-        .blessing-quote.visible {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        .thirukkural {
-          font-family: 'Noto Serif Tamil', serif;
-          font-size: 1.4rem;
-          color: var(--maroon);
-          line-height: 2;
-          margin-bottom: 10px;
-          text-align: left;
-        }
-
-        .thirukkural-eng {
-          font-family: 'Cormorant Garamond', serif;
-          font-style: italic;
-          font-size: 1.05rem;
-          color: var(--gold-dark);
-          margin-bottom: 8px;
-          text-align: left;
-        }
-
-        .thirukkural-ref {
-          font-size: 0.85rem;
-          color: var(--maroon);
-          opacity: 0.6;
-          text-align: left;
-        }
-
-        /* Download Section */
-        .download-section {
-          padding: 50px 20px;
-          background: var(--cream);
-          text-align: center;
-          position: relative;
-          z-index: 2;
-        }
-
-        .download-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          background: linear-gradient(135deg, var(--maroon), var(--maroon-deep));
-          color: var(--gold-light);
-          border: 2px solid var(--gold);
-          padding: 16px 40px;
-          border-radius: 50px;
-          font-family: 'Playfair Display', serif;
-          font-size: 1.1rem;
-          letter-spacing: 1px;
-          cursor: pointer;
-          transition: all 0.4s ease;
-          text-decoration: none;
-          box-shadow: 0 4px 20px rgba(26,58,107,0.2);
-          animation: btnPulse 3s ease-in-out infinite;
-        }
-
-        .download-btn:hover {
-          transform: translateY(-3px) scale(1.03);
-          box-shadow: 0 8px 30px rgba(26,58,107,0.35);
-          background: linear-gradient(135deg, var(--maroon-deep), #0A1A38);
-        }
-
-        .download-btn:active {
-          transform: translateY(0) scale(0.98);
-        }
-
-        @keyframes btnPulse {
-          0%, 100% { box-shadow: 0 4px 20px rgba(26,58,107,0.2); }
-          50% { box-shadow: 0 4px 30px rgba(201,168,76,0.35), 0 0 15px rgba(201,168,76,0.15); }
-        }
-
-        .download-icon {
-          font-size: 1.3rem;
-        }
-
-        .download-subtitle {
-          font-family: 'Noto Serif Tamil', serif;
-          font-size: 0.9rem;
-          color: var(--gold-dark);
-          margin-top: 12px;
-        }
-
-        .download-loading {
-          display: none;
-          margin-top: 15px;
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 0.95rem;
-          color: var(--maroon);
-        }
-
-        .download-loading .spinner {
-          display: inline-block;
-          width: 18px;
-          height: 18px;
-          border: 2px solid var(--gold);
-          border-top-color: var(--maroon);
-          border-radius: 50%;
-          animation: spin 0.8s linear infinite;
-          vertical-align: middle;
-          margin-right: 8px;
-        }
-
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-
-        /* Footer */
-        .footer {
-          padding: 40px 20px;
-          background: linear-gradient(135deg, var(--maroon-deep), var(--maroon));
-          text-align: center;
-          position: relative;
-          z-index: 2;
-        }
-
-        .footer-text {
+        .three-banner canvas { position: absolute; top: 0; left: 0; }
+        .three-banner-text {
+          position: relative; z-index: 3;
           font-family: 'Great Vibes', cursive;
-          font-size: 2rem;
-          color: var(--gold-light);
-          margin-bottom: 10px;
-        }
-
-        .footer-tamil {
-          font-family: 'Noto Serif Tamil', serif;
-          font-size: 1rem;
-          color: var(--gold);
-          margin-bottom: 10px;
-        }
-
-        .footer-names {
-          font-family: 'Playfair Display', serif;
-          font-size: 1.1rem;
-          color: rgba(255,255,255,0.7);
-          letter-spacing: 3px;
-        }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-          .groom-name, .bride-name { font-size: 2.5rem; }
-          .ampersand { font-size: 2rem; }
-          .ornament-frame { padding: 40px 20px; }
-          .ornament-frame::before, .ornament-frame::after,
-          .corner-tr, .corner-bl { width: 60px; height: 60px; }
-          .countdown-number { font-size: 2.2rem; }
-          .countdown-item { min-width: 75px; padding: 18px 14px; }
-          .section-title { font-size: 1.7rem; }
-          .pillayar-suzhi { font-size: 2.2rem; }
-          .mango-leaf { width: 16px; height: 28px; }
-          .couple-names-tamil { font-size: 1.2rem; }
-        }
-
-        /* Scroll animations */
-        .scroll-reveal {
-          opacity: 0;
-          transform: translateY(30px);
-          transition: all 0.8s ease-out;
-        }
-
-        .scroll-reveal.visible {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        /* Sparkle animation on names */
-        @keyframes sparkle {
-          0%, 100% { opacity: 0; transform: scale(0); }
-          50% { opacity: 1; transform: scale(1); }
-        }
-
-        .sparkle-dot {
-          position: absolute;
-          width: 4px;
-          height: 4px;
-          background: var(--gold);
-          border-radius: 50%;
-          animation: sparkle 2s ease-in-out infinite;
+          font-size: 3rem; color: var(--gold-light);
+          text-shadow: 0 0 30px rgba(201,168,76,0.8), 0 2px 4px rgba(0,0,0,0.5);
           pointer-events: none;
         }
 
-        /* Deity SVG Section */
-        .deity-row {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 30px;
-          margin-bottom: 15px;
-          animation: fadeInScale 1.5s ease-out 0.2s both;
-        }
-
-        .deity-svg {
-          width: 90px;
-          height: 110px;
-          filter: drop-shadow(0 4px 12px rgba(26,58,107,0.2));
-          animation: divineGlow 4s ease-in-out infinite;
-        }
-
-        @keyframes divineGlow {
-          0%, 100% { filter: drop-shadow(0 4px 12px rgba(26,58,107,0.2)); }
-          50% { filter: drop-shadow(0 4px 25px rgba(201,168,76,0.5)) drop-shadow(0 0 15px rgba(46,111,217,0.3)); }
-        }
-
-        .deity-center-text {
-          text-align: center;
-        }
-
-        .deity-om {
-          font-size: 2rem;
-          color: var(--maroon);
-          line-height: 1;
-          margin-bottom: 2px;
-        }
-
-        .deity-label {
-          font-family: 'Noto Serif Tamil', serif;
-          font-size: 0.7rem;
-          color: var(--gold-dark);
-          letter-spacing: 1px;
-        }
-
-        /* United by love section */
-        .united-section {
-          margin: 20px 0;
-          opacity: 0;
-          animation: fadeInUp 1s ease-out 0.7s forwards;
-        }
-
-        .united-hearts {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 12px;
-          margin-bottom: 8px;
-        }
-
-        .united-heart {
-          font-size: 1.2rem;
-          animation: heartBeat 2s ease-in-out infinite;
-        }
-
-        .united-heart:nth-child(1) { animation-delay: 0s; }
-        .united-heart:nth-child(3) { animation-delay: 0.3s; }
-
-        @keyframes heartBeat {
-          0%, 100% { transform: scale(1); }
-          15% { transform: scale(1.25); }
-          30% { transform: scale(1); }
-        }
-
-        .united-title {
-          font-family: 'Great Vibes', cursive;
-          font-size: 2.2rem;
-          color: var(--maroon);
-          line-height: 1.2;
-          background: linear-gradient(135deg, var(--maroon), var(--gold-dark), var(--maroon));
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .united-tamil {
-          font-family: 'Noto Serif Tamil', serif;
-          font-size: 1rem;
-          color: var(--gold-dark);
-          margin-top: 4px;
-        }
-
-        .united-eng {
-          font-size: 0.9rem;
-          color: var(--text-dark);
-          font-style: italic;
-          margin-top: 4px;
-        }
-
-        @media (max-width: 600px) {
-          .deity-svg { width: 65px; height: 85px; }
-          .deity-row { gap: 15px; }
-          .united-title { font-size: 1.7rem; }
-          .music-toggle { bottom: 15px; right: 15px; width: 50px; height: 50px; font-size: 1.2rem; }
-        }
-
-        /* ===== Music Toggle Button ===== */
-        .music-toggle {
-          position: fixed;
-          bottom: 25px;
-          right: 25px;
-          width: 56px;
-          height: 56px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, var(--maroon), var(--maroon-deep));
-          border: 2px solid var(--gold);
-          color: var(--gold-light);
-          font-size: 1.4rem;
-          cursor: pointer;
-          z-index: 100;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 4px 20px rgba(26,58,107,0.3);
-          transition: all 0.3s ease;
-        }
-
-        .music-toggle:hover {
-          transform: scale(1.1);
-          box-shadow: 0 6px 25px rgba(26,58,107,0.45);
-        }
-
-        .music-toggle.playing {
-          animation: musicPulse 1.5s ease-in-out infinite;
-        }
-
-        @keyframes musicPulse {
-          0%, 100% { box-shadow: 0 4px 20px rgba(26,58,107,0.3); }
-          50% { box-shadow: 0 4px 30px rgba(201,168,76,0.5), 0 0 20px rgba(201,168,76,0.2); }
-        }
-
-        .music-label {
-          position: fixed;
-          bottom: 32px;
-          right: 90px;
-          background: var(--maroon);
-          color: var(--gold-light);
-          padding: 8px 16px;
-          border-radius: 20px;
-          font-size: 0.8rem;
-          font-family: 'Cormorant Garamond', serif;
-          white-space: nowrap;
-          z-index: 100;
-          opacity: 0;
-          transform: translateX(10px);
-          transition: all 0.4s ease;
-          pointer-events: none;
-          border: 1px solid rgba(201,168,76,0.3);
-        }
-
-        .music-label.show {
-          opacity: 1;
-          transform: translateX(0);
-        }
-
-        /* ===== Confetti / Popping Color Paper ===== */
-        .confetti-piece {
-          position: fixed;
-          width: 10px;
-          height: 10px;
-          z-index: 99;
-          pointer-events: none;
-          opacity: 0;
-        }
-
-        @keyframes confettiFall {
-          0% {
-            transform: translateY(0) rotateX(0) rotateZ(0) scale(1);
-            opacity: 1;
-          }
-          10% { opacity: 1; }
-          80% { opacity: 0.8; }
-          100% {
-            transform: translateY(100vh) rotateX(720deg) rotateZ(360deg) scale(0.3);
-            opacity: 0;
-          }
-        }
-
-        @keyframes confettiPop {
-          0% {
-            transform: scale(0) rotate(0deg);
-            opacity: 0;
-          }
-          20% {
-            transform: scale(1.5) rotate(90deg);
-            opacity: 1;
-          }
-          40% {
-            transform: scale(0.8) rotate(180deg);
-            opacity: 1;
-          }
-          100% {
-            transform: scale(1) rotate(360deg) translateY(100vh);
-            opacity: 0;
-          }
-        }
-
-        /* Splash screen overlay */
-        .splash-overlay {
-          position: fixed;
-          top: 0; left: 0;
-          width: 100%; height: 100%;
-          background: radial-gradient(ellipse at center, rgba(14,34,72,0.95), rgba(14,34,72,0.98));
-          z-index: 1000;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          transition: opacity 0.8s ease, visibility 0.8s ease;
-        }
-
-        .splash-overlay.hidden {
-          opacity: 0;
-          visibility: hidden;
-          pointer-events: none;
-        }
-
-        .splash-text {
-          font-family: 'Great Vibes', cursive;
-          font-size: 2.5rem;
-          color: var(--gold-light);
-          margin-bottom: 10px;
-          animation: fadeInUp 1s ease-out;
-        }
-
-        .splash-tamil {
-          font-family: 'Noto Serif Tamil', serif;
-          font-size: 1.2rem;
-          color: var(--gold);
-          margin-bottom: 40px;
-          animation: fadeInUp 1s ease-out 0.3s both;
-        }
-
-        .splash-btn {
-          background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-          color: var(--maroon-deep);
-          border: none;
-          padding: 16px 50px;
-          border-radius: 50px;
-          font-family: 'Playfair Display', serif;
-          font-size: 1.2rem;
-          font-weight: 700;
-          cursor: pointer;
-          letter-spacing: 2px;
-          transition: all 0.3s ease;
-          animation: fadeInUp 1s ease-out 0.6s both;
-          box-shadow: 0 4px 25px rgba(201,168,76,0.4);
-        }
-
-        .splash-btn:hover {
-          transform: translateY(-3px) scale(1.05);
-          box-shadow: 0 8px 35px rgba(201,168,76,0.6);
-        }
-
-        .splash-names {
-          font-family: 'Great Vibes', cursive;
-          font-size: 3.5rem;
-          color: var(--gold-light);
-          margin-bottom: 5px;
-          animation: fadeInScale 1.2s ease-out 0.2s both;
-        }
-
-        .splash-date {
-          font-family: 'Playfair Display', serif;
-          font-size: 1rem;
-          color: rgba(255,255,255,0.5);
-          letter-spacing: 4px;
-          margin-bottom: 30px;
-          animation: fadeInUp 1s ease-out 0.4s both;
+        @media(max-width:600px){
+          .groom-name,.bride-name{font-size:2.5rem}
+          .ampersand{font-size:2rem}
+          .ornament-frame{padding:40px 20px}
+          .ornament-frame::before,.ornament-frame::after,.corner-tr,.corner-bl{width:60px;height:60px}
+          .countdown-number{font-size:2.2rem}
+          .countdown-item{min-width:75px;padding:18px 14px}
+          .section-title{font-size:1.7rem}
+          .pillayar-suzhi{font-size:2.2rem}
+          .mango-leaf{width:16px;height:28px}
+          .couple-names-tamil{font-size:1.2rem}
+          .united-title{font-size:1.7rem}
+          .music-toggle{bottom:15px;right:15px;width:50px;height:50px;font-size:1.2rem}
+          .three-banner-text{font-size:2rem}
         }
     </style>
 </head>
 <body>
 
-<!-- Splash Welcome Screen -->
+<!-- Global Three.js background canvas -->
+<canvas id="three-canvas"></canvas>
+
+<!-- Splash Screen -->
 <div class="splash-overlay" id="splashOverlay">
     <div class="splash-text">You are cordially invited</div>
     <div class="splash-names">Sankar & Yazhini</div>
     <div class="splash-date">MAY 28, 2026</div>
     <div class="splash-tamil">திருமண அழைப்பிதழ்</div>
-    <button class="splash-btn" id="splashBtn" onclick="openInvitation()">
-        Open Invitation ✉️
-    </button>
+    <button class="splash-btn" onclick="openInvitation()">Open Invitation ✉️</button>
 </div>
 
 <!-- Music Toggle -->
-<button class="music-toggle" id="musicBtn" onclick="toggleMusic()" title="Toggle Music">
-    🔇
-</button>
+<button class="music-toggle" id="musicBtn" onclick="toggleMusic()" title="Toggle Music">🔇</button>
 <div class="music-label" id="musicLabel">🎵 Tap to play music</div>
 
 <!-- Confetti Canvas -->
 <canvas id="confettiCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:98;"></canvas>
 
-<!-- Background Music - place your bg_music.mp3 in the same folder -->
 <audio id="bgMusic" loop preload="auto">
     <source src="bg_music.mp3" type="audio/mpeg">
 </audio>
 
-<!-- Kolam Background Pattern -->
 <div class="kolam-bg"></div>
-
-<!-- Floating Flower Petals (created via JS) -->
 
 <!-- Mango Leaf Toran -->
 <div class="mango-border">
     <div class="mango-string" id="mangoString"></div>
 </div>
 
-<!-- Hero Section -->
+<!-- Hero -->
 <section class="hero">
     <div class="ornament-frame">
         <div class="corner-tr"></div>
         <div class="corner-bl"></div>
 
-        <!-- Ganesha & Krishna with Blessing -->
-        <div class="deity-row">
-            <!-- Ganesha SVG -->
-            <div class="deity-center-text">
-                <div class="deity-om" style="font-family:'Noto Serif Tamil',serif; color:var(--maroon);">ௐ</div>
-            </div>
-
-        </div>
-
+        <div style="font-family:'Noto Serif Tamil',serif;font-size:3rem;color:var(--maroon);margin-bottom:10px;animation:glowPulse 3s ease-in-out infinite;">ௐ</div>
         <div class="divider-line"></div>
 
-        <!-- United by Love -->
         <div class="united-section">
             <div class="united-hearts">
                 <span class="united-heart">❤️</span>
@@ -1145,7 +464,6 @@
             <div class="couple-names-tamil">சங்கர் & யாழினி</div>
         </div>
 
-        <!-- Kolam Divider -->
         <div class="kolam-divider">
             <div class="kolam-line"></div>
             <div class="kolam-dot"></div>
@@ -1159,13 +477,16 @@
     </div>
 </section>
 
-<!-- Events Section -->
+<!-- 3D Flower Banner -->
+<div class="three-banner" id="flowerBanner">
+    <div class="three-banner-text">❧ Celebrations ❧</div>
+</div>
+
+<!-- Events -->
 <section class="events-section">
     <div class="section-title scroll-reveal">Celebrations</div>
     <div class="section-title-tamil scroll-reveal">விழா நிகழ்வுகள்</div>
-
     <div class="events-grid">
-        <!-- Reception Card -->
         <div class="event-card">
             <div class="event-icon">🪔</div>
             <div class="event-type">Reception</div>
@@ -1175,8 +496,6 @@
             <div class="event-time">Evening</div>
             <div class="muhurtham">வரவேற்பு</div>
         </div>
-
-        <!-- Wedding Card -->
         <div class="event-card">
             <div class="event-icon">💍</div>
             <div class="event-type">Wedding Ceremony</div>
@@ -1189,40 +508,22 @@
     </div>
 </section>
 
-<!-- Countdown Section -->
+<!-- Countdown -->
 <section class="countdown-section">
     <div class="countdown-title scroll-reveal">Counting Down To The Big Day</div>
     <div class="countdown-title-tamil scroll-reveal">திருமணத்திற்கு மீதமுள்ள நேரம்</div>
-
     <div class="countdown-grid">
-        <div class="countdown-item">
-            <div class="countdown-number" id="days">00</div>
-            <div class="countdown-label">Days</div>
-            <div class="countdown-label-tamil">நாட்கள்</div>
-        </div>
-        <div class="countdown-item">
-            <div class="countdown-number" id="hours">00</div>
-            <div class="countdown-label">Hours</div>
-            <div class="countdown-label-tamil">மணி</div>
-        </div>
-        <div class="countdown-item">
-            <div class="countdown-number" id="minutes">00</div>
-            <div class="countdown-label">Minutes</div>
-            <div class="countdown-label-tamil">நிமிடங்கள்</div>
-        </div>
-        <div class="countdown-item">
-            <div class="countdown-number" id="seconds">00</div>
-            <div class="countdown-label">Seconds</div>
-            <div class="countdown-label-tamil">விநாடிகள்</div>
-        </div>
+        <div class="countdown-item"><div class="countdown-number" id="days">00</div><div class="countdown-label">Days</div><div class="countdown-label-tamil">நாட்கள்</div></div>
+        <div class="countdown-item"><div class="countdown-number" id="hours">00</div><div class="countdown-label">Hours</div><div class="countdown-label-tamil">மணி</div></div>
+        <div class="countdown-item"><div class="countdown-number" id="minutes">00</div><div class="countdown-label">Minutes</div><div class="countdown-label-tamil">நிமிடங்கள்</div></div>
+        <div class="countdown-item"><div class="countdown-number" id="seconds">00</div><div class="countdown-label">Seconds</div><div class="countdown-label-tamil">விநாடிகள்</div></div>
     </div>
 </section>
 
-<!-- Venue / Map Section -->
+<!-- Venue -->
 <section class="venue-section">
     <div class="section-title scroll-reveal">Venue</div>
     <div class="section-title-tamil scroll-reveal">திருமண இடம்</div>
-
     <div class="venue-card">
         <div class="venue-title">📍 Wedding Location</div>
         <div class="venue-text-tamil">திருமண மண்டபம்</div>
@@ -1230,66 +531,39 @@
             We joyfully invite you to bless us with your gracious presence.<br>
             உங்கள் அருகாமை எங்கள் திருமணத்தை மேலும் சிறப்பாக்கும்.
         </div>
-
         <div class="qr-container">
-            <img id="qrImage" src="" alt="QR Code for venue location" width="180" height="180" style="display:block;"/>
+            <div id="qrDiv"></div>
         </div>
-
-        <p style="font-size:0.85rem; color: var(--gold-dark); margin-bottom:15px;">Scan QR for Google Maps location<br>
-            <span style="font-family: 'Noto Serif Tamil', serif;">QR குறியீட்டை ஸ்கேன் செய்யவும்</span></p>
-
-        <a href="https://maps.app.goo.gl/icDV42SopAWpinPr5" target="_blank" class="map-link">
-            🗺️ Open in Google Maps
-        </a>
-
+        <p style="font-size:0.85rem;color:var(--gold-dark);margin-bottom:15px;">Scan QR for Google Maps location<br><span style="font-family:'Noto Serif Tamil',serif;">QR குறியீட்டை ஸ்கேன் செய்யவும்</span></p>
+        <a href="https://maps.app.goo.gl/icDV42SopAWpinPr5" target="_blank" class="map-link">🗺️ Open in Google Maps</a>
         <div style="margin-top:20px;">
-            <a id="calendarLink" href="#" target="_blank" class="map-link" style="background: linear-gradient(135deg, var(--gold-dark), var(--gold));">
-                📅 Add Reminder to Calendar (May 27)
-            </a>
-            <p style="font-size:0.8rem; color: var(--gold-dark); margin-top:8px; font-family: 'Noto Serif Tamil', serif;">
-                நாளிதழில் நினைவூட்டல் சேர்க்கவும்
-            </p>
+            <a id="calendarLink" href="#" target="_blank" class="map-link" style="background:linear-gradient(135deg,var(--gold-dark),var(--gold));">📅 Add Reminder to Calendar (May 27)</a>
+            <p style="font-size:0.8rem;color:var(--gold-dark);margin-top:8px;font-family:'Noto Serif Tamil',serif;">நாளிதழில் நினைவூட்டல் சேர்க்கவும்</p>
         </div>
     </div>
 </section>
 
-<!-- Blessings Section -->
+<!-- Blessings -->
 <section class="blessings-section">
     <div class="blessing-quote">
-        <div class="thirukkural">
-            அன்பிலார் எல்லாம் தமக்குரியர் அன்புடையார்<br>
-            என்பும் உரியர் பிறர்க்கு
-        </div>
-        <div class="thirukkural-eng">
-            "The loveless keep all for themselves;<br>
-            The loving give even their bones to others."
-        </div>
+        <div class="thirukkural">அன்பிலார் எல்லாம் தமக்குரியர் அன்புடையார்<br>என்பும் உரியர் பிறர்க்கு</div>
+        <div class="thirukkural-eng">"The loveless keep all for themselves;<br>The loving give even their bones to others."</div>
         <div class="thirukkural-ref">— திருக்குறள் 72 / Thirukkural 72 (அன்புடைமை)</div>
-
         <div style="margin-top:40px;">
-            <div class="kolam-divider" style="animation:none; opacity:1;">
-                <div class="kolam-line"></div>
-                <div class="kolam-dot"></div>
-                <div class="kolam-diamond"></div>
-                <div class="kolam-dot"></div>
-                <div class="kolam-line"></div>
+            <div class="kolam-divider" style="animation:none;opacity:1;">
+                <div class="kolam-line"></div><div class="kolam-dot"></div>
+                <div class="kolam-diamond"></div><div class="kolam-dot"></div><div class="kolam-line"></div>
             </div>
         </div>
-
-        <div class="thirukkural" style="margin-top:20px; text-align:center;">
-            வாழ்க வளமுடன் 🙏
-        </div>
-        <div class="thirukkural-eng" style="text-align:center;">
-            Wishing a prosperous life together
-        </div>
+        <div class="thirukkural" style="margin-top:20px;text-align:center;">வாழ்க வளமுடன் 🙏</div>
+        <div class="thirukkural-eng" style="text-align:center;">Wishing a prosperous life together</div>
     </div>
 </section>
 
-<!-- Download Card Section -->
+<!-- Download -->
 <section class="download-section">
     <button class="download-btn" id="downloadBtn" onclick="downloadCard()">
-        <span class="download-icon">📥</span>
-        <span>Download Invitation Card</span>
+        <span>📥</span><span>Download Invitation Card</span>
     </button>
     <div class="download-subtitle">அழைப்பிதழை பதிவிறக்கம் செய்யவும்</div>
     <div class="download-loading" id="downloadLoading">
@@ -1302,635 +576,649 @@
     <div class="footer-text">With Love & Blessings</div>
     <div class="footer-tamil">அன்புடனும் ஆசியுடனும்</div>
     <div class="footer-names">SANKAR & YAZHINI</div>
-    <div style="margin-top:20px; color: rgba(255,255,255,0.4); font-size:0.8rem;">
-        May 28, 2026 · மே 28, 2026
-    </div>
+    <div style="margin-top:20px;color:rgba(255,255,255,0.4);font-size:0.8rem;">May 28, 2026 · மே 28, 2026</div>
 </footer>
 
+<!-- Three.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- QR Code -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 <script>
-    // === Mango Leaf Toran ===
-    (function() {
-      const container = document.getElementById('mangoString');
-      const count = Math.ceil(window.innerWidth / 18);
-      for (let i = 0; i < count; i++) {
-        const leaf = document.createElement('div');
-        leaf.className = 'mango-leaf';
-        leaf.style.animationDelay = (Math.random() * 3) + 's';
-        container.appendChild(leaf);
-      }
-    })();
+// ============================================================
+// THREE.JS — Global Floating Particles Background
+// ============================================================
+(function initThreeBackground() {
+  const canvas = document.getElementById('three-canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x000000, 0);
 
-    // === Floating Flower Petals ===
-    (function() {
-      const colors = ['#2E6FD9', '#4A90D9', '#C9A84C', '#7BB3F0', '#E8D48B', '#1A5CA8'];
-      for (let i = 0; i < 20; i++) {
-        const petal = document.createElement('div');
-        petal.className = 'petal';
-        petal.style.left = Math.random() * 100 + '%';
-        petal.style.background = colors[Math.floor(Math.random() * colors.length)];
-        petal.style.animationDuration = (8 + Math.random() * 12) + 's';
-        petal.style.animationDelay = (Math.random() * 15) + 's';
-        petal.style.width = (8 + Math.random() * 10) + 'px';
-        petal.style.height = (8 + Math.random() * 10) + 'px';
-        document.body.appendChild(petal);
-      }
-    })();
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.z = 30;
 
-    // === Countdown Timer to May 28, 2026, 4:00 AM IST ===
-    (function() {
-      // Target: May 28, 2026 4:00 AM IST (IST = UTC+5:30)
-      // In UTC: May 27, 2026 22:30:00
-      const targetUTC = new Date(Date.UTC(2026, 4, 27, 22, 30, 0));
+  // Gold particles
+  const particleCount = 200;
+  const positions = new Float32Array(particleCount * 3);
+  const sizes = new Float32Array(particleCount);
+  const phases = new Float32Array(particleCount);
 
-      function updateCountdown() {
-        const now = new Date();
-        let diff = targetUTC - now;
+  for (let i = 0; i < particleCount; i++) {
+    positions[i * 3]     = (Math.random() - 0.5) * 80;
+    positions[i * 3 + 1] = (Math.random() - 0.5) * 80;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 30;
+    sizes[i] = 0.3 + Math.random() * 1.5;
+    phases[i] = Math.random() * Math.PI * 2;
+  }
 
-        if (diff <= 0) {
-          document.getElementById('days').textContent = '🎉';
-          document.getElementById('hours').textContent = '00';
-          document.getElementById('minutes').textContent = '00';
-          document.getElementById('seconds').textContent = '00';
-          return;
-        }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-        diff -= d * 1000 * 60 * 60 * 24;
-        const h = Math.floor(diff / (1000 * 60 * 60));
-        diff -= h * 1000 * 60 * 60;
-        const m = Math.floor(diff / (1000 * 60));
-        diff -= m * 1000 * 60;
-        const s = Math.floor(diff / 1000);
+  // Create glowing circle texture
+  const texCanvas = document.createElement('canvas');
+  texCanvas.width = 64; texCanvas.height = 64;
+  const tc = texCanvas.getContext('2d');
+  const grd = tc.createRadialGradient(32, 32, 0, 32, 32, 32);
+  grd.addColorStop(0, 'rgba(201,168,76,1)');
+  grd.addColorStop(0.4, 'rgba(201,168,76,0.6)');
+  grd.addColorStop(1, 'rgba(201,168,76,0)');
+  tc.fillStyle = grd;
+  tc.fillRect(0, 0, 64, 64);
+  const particleTex = new THREE.CanvasTexture(texCanvas);
 
-        document.getElementById('days').textContent = String(d).padStart(2, '0');
-        document.getElementById('hours').textContent = String(h).padStart(2, '0');
-        document.getElementById('minutes').textContent = String(m).padStart(2, '0');
-        document.getElementById('seconds').textContent = String(s).padStart(2, '0');
-      }
+  const mat = new THREE.PointsMaterial({
+    map: particleTex, size: 1.2, transparent: true,
+    opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending,
+    color: 0xC9A84C, sizeAttenuation: true
+  });
 
-      updateCountdown();
-      setInterval(updateCountdown, 1000);
-    })();
+  const particles = new THREE.Points(geo, mat);
+  scene.add(particles);
 
-    // === QR Code via qrcode library ===
-    (function() {
-      const url = 'https://maps.app.goo.gl/icDV42SopAWpinPr5';
-      const qrImg = document.getElementById('qrImage');
+  // Floating star/diamond shapes
+  const diamonds = [];
+  const diamondGeo = new THREE.OctahedronGeometry(0.3, 0);
+  const diamondMat = new THREE.MeshBasicMaterial({ color: 0xE8D48B, transparent: true, opacity: 0.35, wireframe: true });
 
-      // Load QR code library
-      const script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
-      script.onload = function() {
-        // Clear the img and use a container div
-        const container = qrImg.parentElement;
-        qrImg.remove();
-        const qrDiv = document.createElement('div');
-        qrDiv.id = 'qrDiv';
-        container.appendChild(qrDiv);
-        new QRCode(qrDiv, {
-          text: url,
-          width: 180,
-          height: 180,
-          colorDark: '#0E2248',
-          colorLight: '#F7FAFF',
-          correctLevel: QRCode.CorrectLevel.M
-        });
-      };
-      script.onerror = function() {
-        // Fallback: use Google Charts QR API
-        qrImg.src = 'https://chart.googleapis.com/chart?cht=qr&chs=180x180&chl=' + encodeURIComponent(url) + '&chco=0E2248';
-        qrImg.onerror = function() {
-          // Final fallback: direct link text
-          qrImg.alt = 'QR unavailable - use the button below';
-          qrImg.style.display = 'none';
-          const p = document.createElement('p');
-          p.textContent = 'Use the button below for directions';
-          p.style.cssText = 'padding:20px;color:var(--maroon);font-size:0.9rem;';
-          qrImg.parentElement.appendChild(p);
-        };
-      };
-      document.head.appendChild(script);
-    })();
+  for (let i = 0; i < 18; i++) {
+    const mesh = new THREE.Mesh(diamondGeo, diamondMat.clone());
+    mesh.position.set(
+      (Math.random() - 0.5) * 60,
+      (Math.random() - 0.5) * 60,
+      (Math.random() - 0.5) * 20
+    );
+    mesh.userData = {
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.3 + Math.random() * 0.5,
+      floatAmp: 0.5 + Math.random() * 1
+    };
+    const s = 0.5 + Math.random() * 1.5;
+    mesh.scale.set(s, s, s);
+    scene.add(mesh);
+    diamonds.push(mesh);
+  }
 
-    // === Google Calendar Reminder (May 27, 2026 - one day before wedding) ===
-    (function() {
-      // Reminder event: May 27, 2026 all day - day before wedding
-      const title = encodeURIComponent('🎉 Sankar & Yazhini Wedding Tomorrow! | சங்கர் & யாழினி திருமணம் நாளை!');
-      const details = encodeURIComponent('Reminder: Sankar K & Yazhini K wedding is TOMORROW, May 28, 2026!\n\nநினைவூட்டல்: சங்கர் & யாழினி திருமணம் நாளை, மே 28, 2026!\n\nVenue / இடம்: https://maps.app.goo.gl/icDV42SopAWpinPr5\n\nReception (வரவேற்பு): May 27, Evening\nWedding (திருமணம்): May 28, Early Morning');
-      const location = encodeURIComponent('Wedding Venue - https://maps.app.goo.gl/icDV42SopAWpinPr5');
-      // May 27 all day event
-      const dates = '20260527/20260528';
+  // Torus rings (like bangles / wedding rings)
+  const rings = [];
+  const ringGeo = new THREE.TorusGeometry(1.5, 0.06, 8, 40);
+  const ringMat = new THREE.MeshBasicMaterial({ color: 0xC9A84C, transparent: true, opacity: 0.2 });
 
-      const calUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
-        '&text=' + title +
-        '&dates=' + dates +
-        '&details=' + details +
-        '&location=' + location +
-        '&sf=true&output=xml';
+  for (let i = 0; i < 6; i++) {
+    const ring = new THREE.Mesh(ringGeo, ringMat.clone());
+    ring.position.set(
+      (Math.random() - 0.5) * 50,
+      (Math.random() - 0.5) * 50,
+      (Math.random() - 0.5) * 15
+    );
+    ring.rotation.x = Math.random() * Math.PI;
+    ring.rotation.y = Math.random() * Math.PI;
+    ring.userData = { phase: Math.random() * Math.PI * 2, speed: 0.2 + Math.random() * 0.3 };
+    const s = 0.8 + Math.random() * 2;
+    ring.scale.set(s, s, s);
+    scene.add(ring);
+    rings.push(ring);
+  }
 
-      document.getElementById('calendarLink').href = calUrl;
-    })();
+  let mouse = { x: 0, y: 0 };
+  document.addEventListener('mousemove', e => {
+    mouse.x = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouse.y = -(e.clientY / window.innerHeight - 0.5) * 2;
+  });
 
-    // === Scroll Reveal ===
-    (function() {
-      const reveals = document.querySelectorAll('.scroll-reveal, .event-card, .venue-card, .blessing-quote');
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
 
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
-        });
-      }, { threshold: 0.15 });
+  let t = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    t += 0.008;
 
-      reveals.forEach(el => observer.observe(el));
-    })();
-
-    // === Background Music (mp3 file) ===
-    let musicPlaying = false;
-    const bgMusic = document.getElementById('bgMusic');
-
-    function toggleMusic() {
-      const btn = document.getElementById('musicBtn');
-      const label = document.getElementById('musicLabel');
-
-      if (!musicPlaying) {
-        bgMusic.play().then(() => {
-          musicPlaying = true;
-          btn.textContent = '🔊';
-          btn.classList.add('playing');
-          label.textContent = '🎵 Music playing';
-          label.classList.add('show');
-          setTimeout(() => label.classList.remove('show'), 2000);
-        }).catch(err => {
-          console.log('Playback failed:', err);
-          label.textContent = '⚠️ Tap again to play';
-          label.classList.add('show');
-          setTimeout(() => label.classList.remove('show'), 2000);
-        });
-      } else {
-        bgMusic.pause();
-        musicPlaying = false;
-        btn.textContent = '🔇';
-        btn.classList.remove('playing');
-        label.textContent = '🔇 Music paused';
-        label.classList.add('show');
-        setTimeout(() => label.classList.remove('show'), 2000);
-      }
+    // Float particles
+    const pos = geo.attributes.position.array;
+    for (let i = 0; i < particleCount; i++) {
+      pos[i * 3 + 1] += Math.sin(t + phases[i]) * 0.005;
     }
+    geo.attributes.position.needsUpdate = true;
 
-    // === Confetti / Popping Color Paper Effect ===
-    const confettiCanvas = document.getElementById('confettiCanvas');
-    const confCtx = confettiCanvas.getContext('2d');
-    let confettiPieces = [];
-    let confettiAnimating = false;
+    // Parallax
+    particles.rotation.y = mouse.x * 0.03;
+    particles.rotation.x = mouse.y * 0.02;
 
-    function resizeConfettiCanvas() {
-      confettiCanvas.width = window.innerWidth;
-      confettiCanvas.height = window.innerHeight;
+    // Diamonds
+    diamonds.forEach(d => {
+      d.rotation.x += 0.008 * d.userData.speed;
+      d.rotation.y += 0.012 * d.userData.speed;
+      d.position.y += Math.sin(t * d.userData.speed + d.userData.phase) * 0.01 * d.userData.floatAmp;
+      d.material.opacity = 0.2 + 0.15 * Math.sin(t * 0.8 + d.userData.phase);
+    });
+
+    // Rings
+    rings.forEach(r => {
+      r.rotation.x += 0.005 * r.userData.speed;
+      r.rotation.z += 0.008 * r.userData.speed;
+      r.position.y += Math.sin(t * r.userData.speed + r.userData.phase) * 0.008;
+      r.material.opacity = 0.1 + 0.1 * Math.sin(t * 0.5 + r.userData.phase);
+    });
+
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+
+// ============================================================
+// THREE.JS — Flower Banner (section divider)
+// ============================================================
+(function initBannerScene() {
+  const banner = document.getElementById('flowerBanner');
+  const bannerCanvas = document.createElement('canvas');
+  bannerCanvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;';
+  banner.insertBefore(bannerCanvas, banner.firstChild);
+
+  const ren = new THREE.WebGLRenderer({ canvas: bannerCanvas, alpha: true, antialias: true });
+  ren.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  ren.setSize(banner.offsetWidth, banner.offsetHeight);
+  ren.setClearColor(0x000000, 0);
+
+  const sc = new THREE.Scene();
+  const cam = new THREE.PerspectiveCamera(50, banner.offsetWidth / banner.offsetHeight, 0.1, 200);
+  cam.position.z = 12;
+
+  // Lotus petals using custom shapes
+  const petalGroup = new THREE.Group();
+  sc.add(petalGroup);
+
+  const COLORS = [0xC9A84C, 0xE8D48B, 0xA07E2E, 0xF5D470, 0x1A3A6B, 0x2E6FD9];
+
+  function makePetal(color) {
+    const shape = new THREE.Shape();
+    shape.moveTo(0, 0);
+    shape.bezierCurveTo(0.4, 0.8, 0.8, 1.6, 0, 2.2);
+    shape.bezierCurveTo(-0.8, 1.6, -0.4, 0.8, 0, 0);
+    const geo = new THREE.ShapeGeometry(shape, 8);
+    const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.5, side: THREE.DoubleSide });
+    return new THREE.Mesh(geo, mat);
+  }
+
+  // Create multiple lotus flowers
+  for (let f = 0; f < 5; f++) {
+    const flower = new THREE.Group();
+    const numPetals = 8;
+    const c = COLORS[f % COLORS.length];
+    for (let p = 0; p < numPetals; p++) {
+      const petal = makePetal(c);
+      petal.rotation.z = (p / numPetals) * Math.PI * 2;
+      petal.position.y = 0;
+      flower.add(petal);
     }
-    resizeConfettiCanvas();
-    window.addEventListener('resize', resizeConfettiCanvas);
+    flower.position.x = (f - 2) * 5;
+    flower.position.z = Math.random() * -3;
+    flower.userData = { phase: f * 0.8, speed: 0.3 + Math.random() * 0.2 };
+    const s = 0.5 + Math.random() * 0.7;
+    flower.scale.set(s, s, s);
+    petalGroup.add(flower);
+  }
 
-    const confettiColors = [
-      '#2E6FD9', '#4A90D9', '#C9A84C', '#E8D48B', '#7BB3F0',
-      '#1A5CA8', '#FFD700', '#FF6B8A', '#FF4785', '#50E3C2',
-      '#F5A623', '#BD10E0', '#4ECDC4', '#FF6F61', '#A07E2E'
-    ];
+  // Floating gold dust
+  const dustCount = 80;
+  const dustPos = new Float32Array(dustCount * 3);
+  for (let i = 0; i < dustCount; i++) {
+    dustPos[i*3]   = (Math.random()-0.5)*30;
+    dustPos[i*3+1] = (Math.random()-0.5)*6;
+    dustPos[i*3+2] = (Math.random()-0.5)*5;
+  }
+  const dustGeo = new THREE.BufferGeometry();
+  dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+  const dustMat = new THREE.PointsMaterial({ color: 0xE8D48B, size: 0.18, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
+  sc.add(new THREE.Points(dustGeo, dustMat));
 
-    const confettiShapes = ['rect', 'circle', 'triangle', 'strip'];
-
-    function createConfettiPiece(originX, originY) {
-      const angle = Math.random() * Math.PI * 2;
-      const velocity = 4 + Math.random() * 10;
-      const shape = confettiShapes[Math.floor(Math.random() * confettiShapes.length)];
-      return {
-        x: originX,
-        y: originY,
-        vx: Math.cos(angle) * velocity * (0.5 + Math.random()),
-        vy: Math.sin(angle) * velocity * (0.5 + Math.random()) - 6,
-        rotation: Math.random() * 360,
-        rotSpeed: (Math.random() - 0.5) * 15,
-        color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
-        size: 5 + Math.random() * 10,
-        shape: shape,
-        gravity: 0.12 + Math.random() * 0.08,
-        friction: 0.98,
-        opacity: 1,
-        fadeSpeed: 0.003 + Math.random() * 0.005,
-        wobble: Math.random() * 10,
-        wobbleSpeed: 0.05 + Math.random() * 0.1,
-        wobbleOffset: Math.random() * Math.PI * 2,
-        life: 0
-      };
-    }
-
-    function burstConfetti(x, y, count) {
-      for (let i = 0; i < count; i++) {
-        confettiPieces.push(createConfettiPiece(x, y));
-      }
-      if (!confettiAnimating) {
-        confettiAnimating = true;
-        animateConfetti();
-      }
-    }
-
-    function popConfetti() {
-      // Multiple bursts from different positions
-      const W = window.innerWidth;
-      const H = window.innerHeight;
-      burstConfetti(W * 0.2, H * 0.1, 60);
-      burstConfetti(W * 0.8, H * 0.1, 60);
-      burstConfetti(W * 0.5, H * 0.05, 80);
-      // Delayed side bursts
-      setTimeout(() => {
-        burstConfetti(W * 0.1, H * 0.3, 40);
-        burstConfetti(W * 0.9, H * 0.3, 40);
-      }, 300);
-      setTimeout(() => {
-        burstConfetti(W * 0.3, H * 0.05, 50);
-        burstConfetti(W * 0.7, H * 0.05, 50);
-      }, 600);
-    }
-
-    function animateConfetti() {
-      confCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-
-      confettiPieces.forEach(p => {
-        p.life++;
-        p.vy += p.gravity;
-        p.vx *= p.friction;
-        p.x += p.vx + Math.sin(p.life * p.wobbleSpeed + p.wobbleOffset) * p.wobble * 0.05;
-        p.y += p.vy;
-        p.rotation += p.rotSpeed;
-        p.opacity -= p.fadeSpeed;
-
-        if (p.opacity <= 0) return;
-
-        confCtx.save();
-        confCtx.translate(p.x, p.y);
-        confCtx.rotate((p.rotation * Math.PI) / 180);
-        confCtx.globalAlpha = Math.max(0, p.opacity);
-        confCtx.fillStyle = p.color;
-
-        switch (p.shape) {
-          case 'rect':
-            confCtx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
-            break;
-          case 'circle':
-            confCtx.beginPath();
-            confCtx.arc(0, 0, p.size / 2.5, 0, Math.PI * 2);
-            confCtx.fill();
-            break;
-          case 'triangle':
-            confCtx.beginPath();
-            confCtx.moveTo(0, -p.size / 2);
-            confCtx.lineTo(p.size / 2, p.size / 2);
-            confCtx.lineTo(-p.size / 2, p.size / 2);
-            confCtx.closePath();
-            confCtx.fill();
-            break;
-          case 'strip':
-            confCtx.fillRect(-p.size / 1.5, -p.size / 6, p.size * 1.3, p.size / 3);
-            break;
-        }
-
-        confCtx.restore();
+  let bt = 0;
+  function bannerAnimate() {
+    requestAnimationFrame(bannerAnimate);
+    bt += 0.015;
+    petalGroup.children.forEach(flower => {
+      flower.rotation.z += 0.005 * flower.userData.speed;
+      flower.position.y = Math.sin(bt * flower.userData.speed + flower.userData.phase) * 0.5;
+      flower.children.forEach((petal, i) => {
+        petal.scale.x = 0.9 + 0.1 * Math.sin(bt * 2 + i);
+        petal.material.opacity = 0.3 + 0.2 * Math.sin(bt + i * 0.5);
       });
+    });
+    dustMat.opacity = 0.5 + 0.2 * Math.sin(bt * 0.5);
+    ren.render(sc, cam);
+  }
+  bannerAnimate();
 
-      // Remove dead pieces
-      confettiPieces = confettiPieces.filter(p => p.opacity > 0 && p.y < confettiCanvas.height + 50);
+  window.addEventListener('resize', () => {
+    ren.setSize(banner.offsetWidth, banner.offsetHeight);
+    cam.aspect = banner.offsetWidth / banner.offsetHeight;
+    cam.updateProjectionMatrix();
+  });
+})();
 
-      if (confettiPieces.length > 0) {
-        requestAnimationFrame(animateConfetti);
-      } else {
-        confettiAnimating = false;
-        confCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-      }
+// ============================================================
+// Mango Leaves
+// ============================================================
+(function() {
+  const container = document.getElementById('mangoString');
+  const count = Math.ceil(window.innerWidth / 18);
+  for (let i = 0; i < count; i++) {
+    const leaf = document.createElement('div');
+    leaf.className = 'mango-leaf';
+    leaf.style.animationDelay = (Math.random() * 3) + 's';
+    container.appendChild(leaf);
+  }
+})();
+
+// ============================================================
+// Floating Petals
+// ============================================================
+(function() {
+  const colors = ['#2E6FD9','#4A90D9','#C9A84C','#7BB3F0','#E8D48B','#1A5CA8'];
+  for (let i = 0; i < 20; i++) {
+    const petal = document.createElement('div');
+    petal.className = 'petal';
+    petal.style.left = Math.random() * 100 + '%';
+    petal.style.background = colors[Math.floor(Math.random() * colors.length)];
+    petal.style.animationDuration = (8 + Math.random() * 12) + 's';
+    petal.style.animationDelay = (Math.random() * 15) + 's';
+    petal.style.width = (8 + Math.random() * 10) + 'px';
+    petal.style.height = (8 + Math.random() * 10) + 'px';
+    document.body.appendChild(petal);
+  }
+})();
+
+// ============================================================
+// Countdown
+// ============================================================
+(function() {
+  const targetUTC = new Date(Date.UTC(2026, 4, 27, 22, 30, 0));
+  function update() {
+    const now = new Date();
+    let diff = targetUTC - now;
+    if (diff <= 0) {
+      document.getElementById('days').textContent = '🎉';
+      ['hours','minutes','seconds'].forEach(id => document.getElementById(id).textContent = '00');
+      return;
+    }
+    const d = Math.floor(diff / 86400000); diff %= 86400000;
+    const h = Math.floor(diff / 3600000); diff %= 3600000;
+    const m = Math.floor(diff / 60000); diff %= 60000;
+    const s = Math.floor(diff / 1000);
+    document.getElementById('days').textContent = String(d).padStart(2,'0');
+    document.getElementById('hours').textContent = String(h).padStart(2,'0');
+    document.getElementById('minutes').textContent = String(m).padStart(2,'0');
+    document.getElementById('seconds').textContent = String(s).padStart(2,'0');
+  }
+  update(); setInterval(update, 1000);
+})();
+
+// ============================================================
+// QR Code — stored canvas reference for download use
+// ============================================================
+let qrCanvas = null;
+const QR_URL = 'https://maps.app.goo.gl/icDV42SopAWpinPr5';
+
+(function() {
+  new QRCode(document.getElementById('qrDiv'), {
+    text: QR_URL, width: 180, height: 180,
+    colorDark: '#0E2248', colorLight: '#F7FAFF',
+    correctLevel: QRCode.CorrectLevel.M
+  });
+  // Wait for QR to render then grab canvas
+  setTimeout(() => {
+    qrCanvas = document.querySelector('#qrDiv canvas');
+  }, 300);
+})();
+
+// ============================================================
+// Google Calendar
+// ============================================================
+(function() {
+  const title = encodeURIComponent('🎉 Sankar & Yazhini Wedding Tomorrow! | சங்கர் & யாழினி திருமணம் நாளை!');
+  const details = encodeURIComponent('Reminder: Sankar K & Yazhini K wedding is TOMORROW, May 28, 2026!\n\nVenue: https://maps.app.goo.gl/icDV42SopAWpinPr5\n\nReception: May 27, Evening\nWedding: May 28, Early Morning');
+  const location = encodeURIComponent('Wedding Venue - https://maps.app.goo.gl/icDV42SopAWpinPr5');
+  const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=20260527/20260528&details=${details}&location=${location}&sf=true&output=xml`;
+  document.getElementById('calendarLink').href = url;
+})();
+
+// ============================================================
+// Scroll Reveal
+// ============================================================
+(function() {
+  const els = document.querySelectorAll('.scroll-reveal,.event-card,.venue-card,.blessing-quote');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.15 });
+  els.forEach(el => obs.observe(el));
+})();
+
+// ============================================================
+// Music
+// ============================================================
+let musicPlaying = false;
+const bgMusic = document.getElementById('bgMusic');
+function toggleMusic() {
+  const btn = document.getElementById('musicBtn');
+  const label = document.getElementById('musicLabel');
+  if (!musicPlaying) {
+    bgMusic.play().then(() => {
+      musicPlaying = true; btn.textContent = '🔊'; btn.classList.add('playing');
+      label.textContent = '🎵 Music playing'; label.classList.add('show');
+      setTimeout(() => label.classList.remove('show'), 2000);
+    }).catch(() => {
+      label.textContent = '⚠️ Tap again to play'; label.classList.add('show');
+      setTimeout(() => label.classList.remove('show'), 2000);
+    });
+  } else {
+    bgMusic.pause(); musicPlaying = false; btn.textContent = '🔇'; btn.classList.remove('playing');
+    label.textContent = '🔇 Music paused'; label.classList.add('show');
+    setTimeout(() => label.classList.remove('show'), 2000);
+  }
+}
+
+// ============================================================
+// Confetti
+// ============================================================
+const confettiCanvas = document.getElementById('confettiCanvas');
+const confCtx = confettiCanvas.getContext('2d');
+let confettiPieces = [], confettiAnimating = false;
+function resizeConfetti() { confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; }
+resizeConfetti(); window.addEventListener('resize', resizeConfetti);
+
+const confColors = ['#2E6FD9','#4A90D9','#C9A84C','#E8D48B','#7BB3F0','#1A5CA8','#FFD700','#FF6B8A','#FF4785','#50E3C2','#F5A623','#BD10E0','#4ECDC4','#FF6F61','#A07E2E'];
+const confShapes = ['rect','circle','triangle','strip'];
+
+function mkConf(x, y) {
+  const angle = Math.random() * Math.PI * 2, vel = 4 + Math.random() * 10;
+  return {
+    x, y, vx: Math.cos(angle)*vel*(0.5+Math.random()), vy: Math.sin(angle)*vel*(0.5+Math.random())-6,
+    rotation: Math.random()*360, rotSpeed: (Math.random()-0.5)*15,
+    color: confColors[Math.floor(Math.random()*confColors.length)],
+    size: 5+Math.random()*10, shape: confShapes[Math.floor(Math.random()*confShapes.length)],
+    gravity: 0.12+Math.random()*0.08, friction: 0.98, opacity: 1,
+    fadeSpeed: 0.003+Math.random()*0.005, wobble: Math.random()*10,
+    wobbleSpeed: 0.05+Math.random()*0.1, wobbleOffset: Math.random()*Math.PI*2, life: 0
+  };
+}
+
+function burstConfetti(x, y, count) {
+  for (let i=0;i<count;i++) confettiPieces.push(mkConf(x,y));
+  if (!confettiAnimating) { confettiAnimating=true; animConf(); }
+}
+
+function popConfetti() {
+  const W=window.innerWidth, H=window.innerHeight;
+  burstConfetti(W*.2,H*.1,60); burstConfetti(W*.8,H*.1,60); burstConfetti(W*.5,H*.05,80);
+  setTimeout(()=>{ burstConfetti(W*.1,H*.3,40); burstConfetti(W*.9,H*.3,40); },300);
+  setTimeout(()=>{ burstConfetti(W*.3,H*.05,50); burstConfetti(W*.7,H*.05,50); },600);
+}
+
+function animConf() {
+  confCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+  confettiPieces.forEach(p=>{
+    p.life++; p.vy+=p.gravity; p.vx*=p.friction;
+    p.x+=p.vx+Math.sin(p.life*p.wobbleSpeed+p.wobbleOffset)*p.wobble*0.05;
+    p.y+=p.vy; p.rotation+=p.rotSpeed; p.opacity-=p.fadeSpeed;
+    if(p.opacity<=0) return;
+    confCtx.save(); confCtx.translate(p.x,p.y); confCtx.rotate(p.rotation*Math.PI/180);
+    confCtx.globalAlpha=Math.max(0,p.opacity); confCtx.fillStyle=p.color;
+    switch(p.shape){
+      case 'rect': confCtx.fillRect(-p.size/2,-p.size/4,p.size,p.size/2); break;
+      case 'circle': confCtx.beginPath(); confCtx.arc(0,0,p.size/2.5,0,Math.PI*2); confCtx.fill(); break;
+      case 'triangle':
+        confCtx.beginPath(); confCtx.moveTo(0,-p.size/2); confCtx.lineTo(p.size/2,p.size/2);
+        confCtx.lineTo(-p.size/2,p.size/2); confCtx.closePath(); confCtx.fill(); break;
+      case 'strip': confCtx.fillRect(-p.size/1.5,-p.size/6,p.size*1.3,p.size/3); break;
+    }
+    confCtx.restore();
+  });
+  confettiPieces = confettiPieces.filter(p=>p.opacity>0&&p.y<confettiCanvas.height+50);
+  if (confettiPieces.length>0) requestAnimationFrame(animConf);
+  else { confettiAnimating=false; confCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height); }
+}
+
+// ============================================================
+// Splash
+// ============================================================
+function openInvitation() {
+  document.getElementById('splashOverlay').classList.add('hidden');
+  setTimeout(popConfetti, 300);
+  setTimeout(()=>{ if(!musicPlaying) toggleMusic(); },500);
+  setTimeout(popConfetti, 2500);
+}
+
+// ============================================================
+// DOWNLOAD CARD — Fixed QR rendering
+// ============================================================
+function downloadCard() {
+  const btn = document.getElementById('downloadBtn');
+  const loading = document.getElementById('downloadLoading');
+  btn.style.pointerEvents = 'none'; btn.style.opacity = '0.6';
+  loading.style.display = 'block';
+
+  // Helper: draw rounded rect path
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+    ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r);
+    ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h);
+    ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r);
+    ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+  }
+
+  function buildAndDownload(qrImageData) {
+    const W = 1080, H = 1950;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    const navy = '#0E2248', blue = '#1A3A6B', lightBlue = '#EFF4FB';
+    const gold = '#C9A84C', goldLight = '#E8D48B', goldDark = '#A07E2E', white = '#F7FAFF';
+
+    // Background
+    const bgGrad = ctx.createLinearGradient(0,0,0,H);
+    bgGrad.addColorStop(0,lightBlue); bgGrad.addColorStop(0.3,white);
+    bgGrad.addColorStop(0.7,white); bgGrad.addColorStop(1,'#D6E3F5');
+    ctx.fillStyle = bgGrad; ctx.fillRect(0,0,W,H);
+
+    // Top bar
+    const topGrad = ctx.createLinearGradient(0,0,W,0);
+    topGrad.addColorStop(0,navy); topGrad.addColorStop(0.5,blue); topGrad.addColorStop(1,navy);
+    ctx.fillStyle = topGrad; ctx.fillRect(0,0,W,12);
+
+    // Gold border
+    ctx.strokeStyle = gold; ctx.lineWidth = 3; ctx.strokeRect(40,40,W-80,H-80);
+    ctx.strokeStyle = goldLight; ctx.lineWidth = 1; ctx.strokeRect(50,50,W-100,H-100);
+
+    // Corner ornaments
+    function drawCorner(x,y,fx,fy) {
+      ctx.save(); ctx.translate(x,y); ctx.scale(fx,fy);
+      ctx.strokeStyle=gold; ctx.lineWidth=2.5;
+      ctx.beginPath(); ctx.moveTo(0,40); ctx.lineTo(0,0); ctx.lineTo(40,0); ctx.stroke();
+      ctx.beginPath(); ctx.arc(0,0,12,0,Math.PI/2); ctx.stroke();
+      ctx.fillStyle=gold; ctx.beginPath();
+      ctx.moveTo(6,0); ctx.lineTo(12,-6); ctx.lineTo(18,0); ctx.lineTo(12,6);
+      ctx.closePath(); ctx.fill(); ctx.restore();
+    }
+    drawCorner(60,60,1,1); drawCorner(W-60,60,-1,1);
+    drawCorner(60,H-60,1,-1); drawCorner(W-60,H-60,-1,-1);
+
+    function drawText(text,y,font,color,maxW) {
+      ctx.fillStyle=color; ctx.font=font;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      maxW ? ctx.fillText(text,W/2,y,maxW) : ctx.fillText(text,W/2,y);
+    }
+    function drawDivider(y) {
+      const g = ctx.createLinearGradient(W*.2,0,W*.8,0);
+      g.addColorStop(0,'transparent'); g.addColorStop(0.3,gold);
+      g.addColorStop(0.5,goldLight); g.addColorStop(0.7,gold); g.addColorStop(1,'transparent');
+      ctx.strokeStyle=g; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(W*.15,y); ctx.lineTo(W*.85,y); ctx.stroke();
+      ctx.fillStyle=gold; ctx.save(); ctx.translate(W/2,y); ctx.rotate(Math.PI/4);
+      ctx.fillRect(-5,-5,10,10); ctx.restore();
     }
 
-    // === Splash Screen / Open Invitation ===
-    function openInvitation() {
-      const splash = document.getElementById('splashOverlay');
-      splash.classList.add('hidden');
+    let yPos = 130;
+    drawText('ௐ',yPos,'bold 70px serif',navy); yPos+=80;
+    drawDivider(yPos); yPos+=55;
+    drawText('United by Love',yPos,'italic 58px Georgia, serif',blue); yPos+=50;
+    drawText('அன்பால் இணைந்த இரு உள்ளங்கள்',yPos,'36px sans-serif',goldDark); yPos+=60;
+    drawDivider(yPos); yPos+=75;
+    drawText('Sankar K',yPos,'italic 90px Georgia, serif',navy); yPos+=75;
+    drawText('&',yPos,'italic 60px Georgia, serif',gold); yPos+=75;
+    drawText('Yazhini K',yPos,'italic 90px Georgia, serif',navy); yPos+=58;
+    drawText('சங்கர்  &  யாழினி',yPos,'42px sans-serif',goldDark); yPos+=65;
+    drawDivider(yPos); yPos+=58;
 
-      // Trigger confetti burst
-      setTimeout(popConfetti, 300);
+    // Reception
+    drawText('வரவேற்பு விழா  |  Reception',yPos,'bold 36px sans-serif',blue); yPos+=52;
+    drawText('May 27, 2026  |  மே 27, 2026',yPos,'38px Georgia, serif',navy); yPos+=44;
+    drawText('Evening',yPos,'30px Georgia, serif',goldDark); yPos+=55;
+    drawDivider(yPos); yPos+=58;
 
-      // Start music automatically
-      setTimeout(() => {
-        if (!musicPlaying) {
-          toggleMusic();
-        }
-      }, 500);
+    // Wedding
+    drawText('திருமண முகூர்த்தம்  |  Wedding',yPos,'bold 36px sans-serif',blue); yPos+=52;
+    drawText('May 28, 2026  |  மே 28, 2026',yPos,'38px Georgia, serif',navy); yPos+=44;
+    drawText('Early Morning  |  அதிகாலை',yPos,'30px Georgia, serif',goldDark); yPos+=52;
 
-      // Show music label hint
-      setTimeout(() => {
-        const label = document.getElementById('musicLabel');
-        label.textContent = '🎵 Music playing';
-        label.classList.add('show');
-        setTimeout(() => label.classList.remove('show'), 3000);
-      }, 1500);
+    // Badge
+    const bW=300,bH=48;
+    const bGrad = ctx.createLinearGradient(W/2-bW/2,0,W/2+bW/2,0);
+    bGrad.addColorStop(0,navy); bGrad.addColorStop(1,blue);
+    ctx.fillStyle=bGrad; roundRect(ctx,W/2-bW/2,yPos-bH/2,bW,bH,24); ctx.fill();
+    drawText('சுபமுகூர்த்தம்',yPos,'bold 24px sans-serif',goldLight);
+    yPos+=60; drawDivider(yPos); yPos+=55;
 
-      // Repeat confetti after a bit
-      setTimeout(popConfetti, 2500);
+    // QR Section
+    drawText('📍 Venue  |  திருமண இடம்',yPos,'bold 34px sans-serif',blue); yPos+=50;
+    drawText('Scan QR for Location',yPos,'28px Georgia, serif',goldDark); yPos+=38;
+    drawText('QR குறியீட்டை ஸ்கேன் செய்யவும்',yPos,'26px sans-serif',goldDark); yPos+=55;
+
+    const qrSize = 220, qrX = W/2-qrSize/2;
+    // QR border box
+    ctx.strokeStyle=gold; ctx.lineWidth=4;
+    roundRect(ctx,qrX-18,yPos-18,qrSize+36,qrSize+36,14); ctx.stroke();
+    ctx.fillStyle=white; roundRect(ctx,qrX-14,yPos-14,qrSize+28,qrSize+28,12); ctx.fill();
+
+    // Draw QR image (pre-loaded)
+    if (qrImageData) {
+      ctx.drawImage(qrImageData, qrX, yPos, qrSize, qrSize);
+    } else {
+      // Fallback: draw manual QR placeholder text
+      ctx.fillStyle=navy; ctx.font='28px sans-serif'; ctx.textAlign='center';
+      ctx.fillText('maps.app.goo.gl/', W/2, yPos+qrSize/2-20);
+      ctx.fillText('icDV42SopAWpinPr5', W/2, yPos+qrSize/2+20);
     }
+    yPos += qrSize + 45;
+    drawText('maps.app.goo.gl/icDV42SopAWpinPr5',yPos,'22px sans-serif',blue);
+    yPos+=52; drawDivider(yPos); yPos+=55;
 
-    // Show music label on load
+    // Blessing
+    drawText('வாழ்க வளமுடன் 🙏',yPos,'40px sans-serif',navy); yPos+=48;
+    drawText('Wishing a prosperous life together',yPos,'italic 30px Georgia, serif',goldDark);
+
+    // Bottom bar
+    ctx.fillStyle=topGrad; ctx.fillRect(0,H-12,W,12);
+
+    // Subtle dot pattern overlay
+    ctx.globalAlpha=0.03;
+    for(let dx=60;dx<W-60;dx+=40) for(let dy=60;dy<H-60;dy+=40){
+      ctx.fillStyle=navy; ctx.beginPath(); ctx.arc(dx,dy,1.5,0,Math.PI*2); ctx.fill();
+    }
+    ctx.globalAlpha=1;
+
+    // Download
     setTimeout(() => {
-      const label = document.getElementById('musicLabel');
-      if (!document.getElementById('splashOverlay').classList.contains('hidden')) return;
-      label.classList.add('show');
-      setTimeout(() => label.classList.remove('show'), 3000);
-    }, 2000);
-
-    // === Download Concise Invitation Card as Image ===
-    function downloadCard() {
-      const btn = document.getElementById('downloadBtn');
-      const loading = document.getElementById('downloadLoading');
-
-      btn.style.pointerEvents = 'none';
-      btn.style.opacity = '0.6';
-      loading.style.display = 'block';
-
-      // Create a clean card drawn entirely on Canvas
-      const W = 1080, H = 1920; // Phone-friendly portrait ratio
-      const canvas = document.createElement('canvas');
-      canvas.width = W;
-      canvas.height = H;
-      const ctx = canvas.getContext('2d');
-
-      // --- Colors ---
-      const navy = '#0E2248';
-      const blue = '#1A3A6B';
-      const lightBlue = '#EFF4FB';
-      const gold = '#C9A84C';
-      const goldLight = '#E8D48B';
-      const goldDark = '#A07E2E';
-      const white = '#F7FAFF';
-
-      // --- Background ---
-      const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-      bgGrad.addColorStop(0, lightBlue);
-      bgGrad.addColorStop(0.3, white);
-      bgGrad.addColorStop(0.7, white);
-      bgGrad.addColorStop(1, '#D6E3F5');
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(0, 0, W, H);
-
-      // --- Decorative top bar ---
-      const topGrad = ctx.createLinearGradient(0, 0, W, 0);
-      topGrad.addColorStop(0, navy);
-      topGrad.addColorStop(0.5, blue);
-      topGrad.addColorStop(1, navy);
-      ctx.fillStyle = topGrad;
-      ctx.fillRect(0, 0, W, 12);
-
-      // --- Gold border frame ---
-      ctx.strokeStyle = gold;
-      ctx.lineWidth = 3;
-      ctx.strokeRect(40, 40, W - 80, H - 80);
-      ctx.strokeStyle = goldLight;
-      ctx.lineWidth = 1;
-      ctx.strokeRect(50, 50, W - 100, H - 100);
-
-      // --- Corner ornaments ---
-      function drawCorner(x, y, flipX, flipY) {
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.scale(flipX, flipY);
-        ctx.strokeStyle = gold;
-        ctx.lineWidth = 2.5;
-        ctx.beginPath();
-        ctx.moveTo(0, 40);
-        ctx.lineTo(0, 0);
-        ctx.lineTo(40, 0);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(0, 0, 12, 0, Math.PI / 2);
-        ctx.stroke();
-        // small diamond
-        ctx.fillStyle = gold;
-        ctx.beginPath();
-        ctx.moveTo(6, 0);
-        ctx.lineTo(12, -6);
-        ctx.lineTo(18, 0);
-        ctx.lineTo(12, 6);
-        ctx.closePath();
-        ctx.fill();
-        ctx.restore();
-      }
-      drawCorner(60, 60, 1, 1);
-      drawCorner(W - 60, 60, -1, 1);
-      drawCorner(60, H - 60, 1, -1);
-      drawCorner(W - 60, H - 60, -1, -1);
-
-      // --- Helper: draw centered text ---
-      function drawText(text, y, font, color, maxWidth) {
-        ctx.fillStyle = color;
-        ctx.font = font;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        if (maxWidth) {
-          ctx.fillText(text, W / 2, y, maxWidth);
-        } else {
-          ctx.fillText(text, W / 2, y);
-        }
-      }
-
-      // --- Gold divider line ---
-      function drawDivider(y) {
-        const grad = ctx.createLinearGradient(W * 0.2, 0, W * 0.8, 0);
-        grad.addColorStop(0, 'transparent');
-        grad.addColorStop(0.3, gold);
-        grad.addColorStop(0.5, goldLight);
-        grad.addColorStop(0.7, gold);
-        grad.addColorStop(1, 'transparent');
-        ctx.strokeStyle = grad;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(W * 0.15, y);
-        ctx.lineTo(W * 0.85, y);
-        ctx.stroke();
-        // center diamond
-        ctx.fillStyle = gold;
-        ctx.save();
-        ctx.translate(W / 2, y);
-        ctx.rotate(Math.PI / 4);
-        ctx.fillRect(-5, -5, 10, 10);
-        ctx.restore();
-      }
-
-      // --- OM Symbol ---
-      let yPos = 120;
-      drawText('ௐ', yPos, '60px serif', navy);
-
-      yPos += 70;
-      drawDivider(yPos);
-
-      // --- United by Love ---
-      yPos += 50;
-      drawText('United by Love', yPos, 'italic 52px Georgia, serif', blue);
-      yPos += 45;
-      drawText('அன்பால் இணைந்த இரு உள்ளங்கள்', yPos, '32px sans-serif', goldDark);
-
-      yPos += 55;
-      drawDivider(yPos);
-
-      // --- Couple Names ---
-      yPos += 70;
-      drawText('Sankar K', yPos, 'italic 88px Georgia, serif', navy);
-      yPos += 70;
-      drawText('&', yPos, 'italic 56px Georgia, serif', gold);
-      yPos += 70;
-      drawText('Yazhini K', yPos, 'italic 88px Georgia, serif', navy);
-      yPos += 55;
-      drawText('சங்கர்  &  யாழினி', yPos, '40px sans-serif', goldDark);
-
-      yPos += 60;
-      drawDivider(yPos);
-
-      // --- Reception ---
-      yPos += 55;
-      drawText('வரவேற்பு விழா  |  Reception', yPos, 'bold 34px sans-serif', blue);
-      yPos += 48;
-      drawText('May 27, 2026  |  மே 27, 2026', yPos, '36px Georgia, serif', navy);
-      yPos += 40;
-      drawText('Evening', yPos, '28px Georgia, serif', goldDark);
-
-      yPos += 50;
-      drawDivider(yPos);
-
-      // --- Wedding ---
-      yPos += 55;
-      drawText('திருமண முகூர்த்தம்  |  Wedding', yPos, 'bold 34px sans-serif', blue);
-      yPos += 48;
-      drawText('May 28, 2026  |  மே 28, 2026', yPos, '36px Georgia, serif', navy);
-      yPos += 40;
-      drawText('Early Morning  |  அதிகாலை', yPos, '28px Georgia, serif', goldDark);
-
-      // --- Muhurtham badge ---
-      yPos += 50;
-      const badgeW = 280, badgeH = 44;
-      const badgeGrad = ctx.createLinearGradient(W/2 - badgeW/2, yPos - badgeH/2, W/2 + badgeW/2, yPos + badgeH/2);
-      badgeGrad.addColorStop(0, navy);
-      badgeGrad.addColorStop(1, blue);
-      ctx.fillStyle = badgeGrad;
-      roundRect(ctx, W/2 - badgeW/2, yPos - badgeH/2, badgeW, badgeH, 22);
-      ctx.fill();
-      drawText('சுபமுகூர்த்தம்', yPos, 'bold 22px sans-serif', goldLight);
-
-      yPos += 55;
-      drawDivider(yPos);
-
-      // --- Venue QR ---
-      yPos += 50;
-      drawText('📍 Venue  |  திருமண இடம்', yPos, 'bold 32px sans-serif', blue);
-      yPos += 45;
-      drawText('Scan QR for Location', yPos, '26px Georgia, serif', goldDark);
-      yPos += 8;
-      drawText('QR குறியீட்டை ஸ்கேன் செய்யவும்', yPos + 30, '24px sans-serif', goldDark);
-
-      // Draw QR code into the card
-      yPos += 70;
-      const qrSize = 200;
-      const qrX = W/2 - qrSize/2;
-      // QR border
-      ctx.strokeStyle = gold;
-      ctx.lineWidth = 3;
-      roundRect(ctx, qrX - 15, yPos - 15, qrSize + 30, qrSize + 30, 12);
-      ctx.stroke();
-      ctx.fillStyle = white;
-      roundRect(ctx, qrX - 12, yPos - 12, qrSize + 24, qrSize + 24, 10);
-      ctx.fill();
-
-      // Try to grab QR from page
-      const qrEl = document.querySelector('#qrDiv img') || document.querySelector('#qrDiv canvas') || document.querySelector('#qrImage');
-      if (qrEl) {
-        try {
-          ctx.drawImage(qrEl, qrX, yPos, qrSize, qrSize);
-        } catch(e) {
-          drawText('QR', yPos + qrSize/2, 'bold 40px sans-serif', blue);
-        }
-      } else {
-        drawText('QR', yPos + qrSize/2, 'bold 40px sans-serif', blue);
-      }
-
-      yPos += qrSize + 40;
-      drawText('maps.app.goo.gl/icDV42SopAWpinPr5', yPos, '22px sans-serif', blue);
-
-      yPos += 50;
-      drawDivider(yPos);
-
-      // --- Blessing ---
-      yPos += 50;
-      drawText('வாழ்க வளமுடன் 🙏', yPos, '38px sans-serif', navy);
-      yPos += 42;
-      drawText('Wishing a prosperous life together', yPos, 'italic 28px Georgia, serif', goldDark);
-
-      // --- Bottom bar ---
-      const btmGrad = ctx.createLinearGradient(0, 0, W, 0);
-      btmGrad.addColorStop(0, navy);
-      btmGrad.addColorStop(0.5, blue);
-      btmGrad.addColorStop(1, navy);
-      ctx.fillStyle = btmGrad;
-      ctx.fillRect(0, H - 12, W, 12);
-
-      // --- Helper: rounded rect ---
-      function roundRect(c, x, y, w, h, r) {
-        c.beginPath();
-        c.moveTo(x + r, y);
-        c.lineTo(x + w - r, y);
-        c.quadraticCurveTo(x + w, y, x + w, y + r);
-        c.lineTo(x + w, y + h - r);
-        c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-        c.lineTo(x + r, y + h);
-        c.quadraticCurveTo(x, y + h, x, y + h - r);
-        c.lineTo(x, y + r);
-        c.quadraticCurveTo(x, y, x + r, y);
-        c.closePath();
-      }
-
-      // --- Trigger download ---
-      setTimeout(() => {
-        try {
-          canvas.toBlob(function(blob) {
-            if (blob) {
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = 'Sankar_Yazhini_Wedding_Invitation.png';
-              document.body.appendChild(a);
-              a.click();
-              document.body.removeChild(a);
-              setTimeout(() => URL.revokeObjectURL(url), 5000);
-            } else {
-              fallbackDownload();
-            }
-            resetBtn();
-          }, 'image/png');
-        } catch(e) {
-          fallbackDownload();
-          resetBtn();
-        }
-      }, 200);
-
-      function fallbackDownload() {
+      try {
+        canvas.toBlob(blob => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href=url; a.download='Sankar_Yazhini_Wedding_Invitation.png';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            setTimeout(()=>URL.revokeObjectURL(url),5000);
+          } else {
+            const a = document.createElement('a');
+            a.href=canvas.toDataURL('image/png'); a.download='Sankar_Yazhini_Wedding_Invitation.png';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          }
+          btn.style.pointerEvents=''; btn.style.opacity=''; loading.style.display='none';
+        }, 'image/png');
+      } catch(e) {
         const a = document.createElement('a');
-        a.href = canvas.toDataURL('image/png');
-        a.download = 'Sankar_Yazhini_Wedding_Invitation.png';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        a.href=canvas.toDataURL('image/png'); a.download='Sankar_Yazhini_Wedding_Invitation.png';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        btn.style.pointerEvents=''; btn.style.opacity=''; loading.style.display='none';
       }
+    }, 200);
+  }
 
-      function resetBtn() {
-        btn.style.pointerEvents = '';
-        btn.style.opacity = '';
-        loading.style.display = 'none';
-      }
+  // ---- Load QR as image to avoid tainted canvas ----
+  // Strategy: get QR canvas data URL, create a new Image, draw it
+  function getQRAndBuild() {
+    if (qrCanvas) {
+      try {
+        // Try getting data URL from the QR canvas directly
+        const dataURL = qrCanvas.toDataURL('image/png');
+        const img = new Image();
+        img.onload = () => buildAndDownload(img);
+        img.onerror = () => buildAndDownload(null);
+        img.src = dataURL;
+        return;
+      } catch(e) { /* tainted canvas, fall through */ }
     }
-</script>
+    // Fallback: generate QR fresh on an offscreen canvas using QRCode lib
+    try {
+      const offDiv = document.createElement('div');
+      document.body.appendChild(offDiv);
+      offDiv.style.cssText = 'position:fixed;top:-9999px;left:-9999px;';
+      new QRCode(offDiv, {
+        text: QR_URL, width: 220, height: 220,
+        colorDark: '#0E2248', colorLight: '#F7FAFF',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+      setTimeout(() => {
+        const freshCanvas = offDiv.querySelector('canvas');
+        if (freshCanvas) {
+          try {
+            const dataURL = freshCanvas.toDataURL('image/png');
+            const img = new Image();
+            img.onload = () => { document.body.removeChild(offDiv); buildAndDownload(img); };
+            img.onerror = () => { document.body.removeChild(offDiv); buildAndDownload(null); };
+            img.src = dataURL;
+          } catch(e) { document.body.removeChild(offDiv); buildAndDownload(null); }
+        } else { document.body.removeChild(offDiv); buildAndDownload(null); }
+      }, 400);
+    } catch(e) { buildAndDownload(null); }
+  }
 
+  getQRAndBuild();
+}
+</script>
 </body>
 </html>
