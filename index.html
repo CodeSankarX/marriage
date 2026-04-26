@@ -385,14 +385,15 @@
         .groom-name, .bride-name {
           font-family: 'Great Vibes', cursive;
           font-size: 4.2rem;
-          line-height: 1.05;
+          line-height: 1.4;
           color: var(--maroon-deep);
           background: linear-gradient(135deg, var(--maroon-deep) 0%, var(--maroon) 50%, var(--gold-deep) 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
-          padding: 0 4px;
+          padding: 0.15em 4px 0.25em;
           font-weight: 400;
+          overflow: visible;
         }
         .ampersand {
           font-family: 'Cormorant Garamond', serif;
@@ -1968,10 +1969,32 @@
 // RANDOM LOVE THIRUKKURAL — pick one each visit
 // ============================================================
 (function pickRandomKural() {
+  // All kurals chosen from இல்லறவியல் (Illaraviyal — Domestic Virtue, kurals 41–240):
+  // chapters on Household Life, Worth of a Spouse, Children, and Love (அன்புடைமை).
   const kurals = [
     {
+      tamil: 'இல்வாழ்வான் என்பான் இயல்புடைய மூவர்க்கும்<br>நல்லாற்றின் நின்ற துணை',
+      en: '"The householder is the steadfast support of all three<br>who walk the path of righteousness."',
+      ref: '— திருக்குறள் 41 · Thirukkural 41'
+    },
+    {
+      tamil: 'அன்பும் அறனும் உடைத்தாயின் இல்வாழ்க்கை<br>பண்பும் பயனும் அது',
+      en: '"A home that holds both love and virtue<br>holds within it both its grace and its reward."',
+      ref: '— திருக்குறள் 45 · Thirukkural 45'
+    },
+    {
+      tamil: 'மங்கலம் என்ப மனைமாட்சி மற்றுஅதன்<br>நன்கலம் நன்மக்கட் பேறு',
+      en: '"Domestic virtue is the auspicious blessing of a home;<br>noble children are its truest ornaments."',
+      ref: '— திருக்குறள் 60 · Thirukkural 60'
+    },
+    {
+      tamil: 'பெறுமவற்றுள் யாமறிவது இல்லை அறிவறிந்த<br>மக்கட்பேறு அல்ல பிற',
+      en: '"Among all blessings we have known,<br>none surpasses the gift of wise children."',
+      ref: '— திருக்குறள் 61 · Thirukkural 61'
+    },
+    {
       tamil: 'அன்பிற்கும் உண்டோ அடைக்குந்தாழ் ஆர்வலர்<br>புன்கணீர் பூசல் தரும்',
-      en: '"Can love be locked away by bolts? The trembling tears of the loving will betray it."',
+      en: '"Can love be locked away by bolts?<br>The trembling tears of the loving will betray it."',
       ref: '— திருக்குறள் 71 · Thirukkural 71'
     },
     {
@@ -1980,54 +2003,34 @@
       ref: '— திருக்குறள் 72 · Thirukkural 72'
     },
     {
-      tamil: 'என்பி லதனை வெயில்போலக் காயுமே<br>அன்பி லதனை அறம்',
-      en: '"Virtue scorches a loveless heart, just as the sun scorches a worm without bones."',
-      ref: '— திருக்குறள் 77 · Thirukkural 77'
+      tamil: 'அன்போடு இயைந்த வழக்கென்ப ஆருயிர்க்கு<br>என்போடு இயைந்த தொடர்பு',
+      en: '"The bond between body and life-breath, they say,<br>is the natural bond formed through love."',
+      ref: '— திருக்குறள் 73 · Thirukkural 73'
     },
     {
       tamil: 'அன்பீனும் ஆர்வம் உடைமை அதுஈனும்<br>நண்பென்னும் நாடாச் சிறப்பு',
-      en: '"Love begets devotion; devotion begets the boundless excellence called friendship."',
+      en: '"Love begets devotion; devotion in turn begets<br>the boundless excellence called friendship."',
       ref: '— திருக்குறள் 74 · Thirukkural 74'
     },
     {
+      tamil: 'அன்புற்று அமர்ந்த வழக்கென்ப வையகத்து<br>இன்புற்றார் எய்தும் சிறப்பு',
+      en: '"The bliss enjoyed by the joyful in this world<br>is the gift of lives lived in loving harmony."',
+      ref: '— திருக்குறள் 75 · Thirukkural 75'
+    },
+    {
       tamil: 'அறத்திற்கே அன்புசார்பு என்ப அறியார்<br>மறத்திற்கும் அஃதே துணை',
-      en: '"The unwise think love supports only virtue;<br>love is the support of valor too."',
+      en: '"The unwise say love supports only virtue;<br>love is the support of valor too."',
       ref: '— திருக்குறள் 76 · Thirukkural 76'
     },
     {
-      tamil: 'உண்டார்கண் அல்லது அடுநறாக் காமம்போல்<br>கண்டார் மகிழ்செய்தல் இன்று',
-      en: '"Wine delights only those who drink it;<br>love delights even those who behold it."',
-      ref: '— திருக்குறள் 1090 · Thirukkural 1090'
+      tamil: 'என்பி லதனை வெயில்போலக் காயுமே<br>அன்பி லதனை அறம்',
+      en: '"Virtue scorches a loveless heart,<br>just as the sun scorches a boneless worm."',
+      ref: '— திருக்குறள் 77 · Thirukkural 77'
     },
     {
-      tamil: 'கண்ணொடு கண்ணினை நோக்கொக்கின் வாய்ச்சொற்கள்<br>என்ன பயனும் இல',
-      en: '"When eye meets eye and the look is one,<br>words spoken on the lips serve no purpose."',
-      ref: '— திருக்குறள் 1100 · Thirukkural 1100'
-    },
-    {
-      tamil: 'வீழும் இருவர்க்கு இனிதே வளியிடை<br>போழப் படாஅ முயக்கு',
-      en: '"Sweet to two who love is the embrace<br>which not even the wind can pass between."',
-      ref: '— திருக்குறள் 1108 · Thirukkural 1108'
-    },
-    {
-      tamil: 'தாம்வீழ்வார் தம்வீழப் பெற்றவர் பெற்றாரே<br>காமத்துக் காழில் கனி',
-      en: '"Those who are loved by the one they love<br>have truly tasted the seedless fruit of love."',
-      ref: '— திருக்குறள் 1191 · Thirukkural 1191'
-    },
-    {
-      tamil: 'எனைத்தொன்று இனிதேகாண் காமம்தாம் வீழ்வார்<br>நினைப்ப வருவதொன்று இல',
-      en: '"How sweet is love! For those who love,<br>no thought of weariness ever arises."',
-      ref: '— திருக்குறள் 1202 · Thirukkural 1202'
-    },
-    {
-      tamil: 'உள்ளக் களித்தலும் காண மகிழ்தலும்<br>கள்ளுக்கு இல்லாத கவின்',
-      en: '"Wine has not the loveliness of love<br>which delights at the mere thought, and gladdens at the mere sight."',
-      ref: '— திருக்குறள் 1281 · Thirukkural 1281'
-    },
-    {
-      tamil: 'கண்டுகேட்டு உண்டுயிர்த்து உற்றறியும் ஐம்புலனும்<br>ஒண்தொடி கண்ணே உள',
-      en: '"All five sense delights — sight, sound, taste, smell, and touch —<br>dwell in this bright-bangled maiden alone."',
-      ref: '— திருக்குறள் 1101 · Thirukkural 1101'
+      tamil: 'அன்பின் வழியது உயிர்நிலை அஃதிலார்க்கு<br>என்புதோல் போர்த்த உடம்பு',
+      en: '"Love is the very pathway of the soul;<br>without it, the body is mere bone wrapped in skin."',
+      ref: '— திருக்குறள் 80 · Thirukkural 80'
     }
   ];
 
