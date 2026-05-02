@@ -1867,12 +1867,14 @@
                 </div>
 
                 <div class="qr-container">
-                    <div id="qrDiv"></div>
+                    <div id="qrDiv">
+                        <img id="qrImg" src="assets/venue-qr.png" alt="Scan for directions to the wedding venue" width="180" height="180" style="display:block;width:180px;height:180px;">
+                    </div>
                 </div>
                 <div class="qr-caption">SCAN FOR DIRECTIONS</div>
 
                 <div class="venue-actions">
-                    <a href="https://maps.app.goo.gl/icDV42SopAWpinPr5" target="_blank" rel="noopener" class="btn-primary">
+                    <a href="https://maps.app.goo.gl/PNVdAvvmebktALbB6" target="_blank" rel="noopener" class="btn-primary">
                         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
                             <circle cx="12" cy="10" r="3"/>
@@ -1961,9 +1963,6 @@
 
 <!-- Three.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<!-- QR Code -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
 <script>
 // ============================================================
 // RANDOM LOVE THIRUKKURAL — pick one each visit
@@ -2442,29 +2441,19 @@
 })();
 
 // ============================================================
-// QR Code
+// QR Code — uses the static image at assets/venue-qr.png
 // ============================================================
 let qrCanvas = null;
-const QR_URL = 'https://maps.app.goo.gl/icDV42SopAWpinPr5';
-
-(function() {
-  new QRCode(document.getElementById('qrDiv'), {
-    text: QR_URL, width: 180, height: 180,
-    colorDark: '#4A0E1A', colorLight: '#FFFCF5',
-    correctLevel: QRCode.CorrectLevel.M
-  });
-  setTimeout(() => {
-    qrCanvas = document.querySelector('#qrDiv canvas');
-  }, 300);
-})();
+const QR_URL = 'https://maps.app.goo.gl/PNVdAvvmebktALbB6';
+const QR_IMAGE_PATH = 'assets/venue-qr.png';
 
 // ============================================================
 // Google Calendar
 // ============================================================
 (function() {
   const title = encodeURIComponent('🎉 Sankar & Yazhini Wedding Tomorrow!');
-  const details = encodeURIComponent('Reminder: Sankar K & Yazhini K wedding is TOMORROW, May 28, 2026!\n\nVenue: https://maps.app.goo.gl/icDV42SopAWpinPr5\n\nReception: May 27, Evening\nWedding: May 28, Early Morning');
-  const location = encodeURIComponent('Wedding Venue - https://maps.app.goo.gl/icDV42SopAWpinPr5');
+  const details = encodeURIComponent('Reminder: Sankar K & Yazhini K wedding is TOMORROW, May 28, 2026!\n\nVenue: https://maps.app.goo.gl/PNVdAvvmebktALbB6\n\nReception: May 27, Evening\nWedding: May 28, Early Morning');
+  const location = encodeURIComponent('Wedding Venue - https://maps.app.goo.gl/PNVdAvvmebktALbB6');
   const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=20260527/20260528&details=${details}&location=${location}&sf=true&output=xml`;
   document.getElementById('calendarLink').href = url;
 })();
@@ -2885,7 +2874,7 @@ function downloadCard() {
     }
     yPos += qrSize + pad + 24;
 
-    text('maps.app.goo.gl/icDV42SopAWpinPr5', {
+    text('maps.app.goo.gl/PNVdAvvmebktALbB6', {
       font: '20px "SF Mono", Menlo, monospace',
       color: maroon, size: 20, after: 32
     });
@@ -2929,74 +2918,11 @@ function downloadCard() {
   }
 
   function getQRAndBuild() {
-    const tryBuildFromNode = (node) => {
-      if (!node) return false;
-      try {
-        if (node.tagName && node.tagName.toLowerCase() === 'canvas') {
-          const dataURL = node.toDataURL('image/png');
-          const img = new Image();
-          img.onload = () => buildAndDownload(img);
-          img.onerror = () => buildAndDownload(null);
-          img.src = dataURL;
-          return true;
-        }
-        if (node.tagName && node.tagName.toLowerCase() === 'img') {
-          const img = new Image();
-          img.onload = () => buildAndDownload(img);
-          img.onerror = () => buildAndDownload(null);
-          img.src = node.currentSrc || node.src;
-          return true;
-        }
-      } catch (e) { /* fall through */ }
-      return false;
-    };
-
-    const start = performance.now();
-    const waitForInPageQR = () => {
-      qrCanvas = document.querySelector('#qrDiv canvas') || qrCanvas;
-      const qrImg = document.querySelector('#qrDiv img');
-      const node = qrCanvas || qrImg;
-      if (node && tryBuildFromNode(node)) return;
-      if (performance.now() - start > 2000) return generateOffscreenQR();
-      requestAnimationFrame(waitForInPageQR);
-    };
-
-    const generateOffscreenQR = () => {
-      try {
-        const offDiv = document.createElement('div');
-        document.body.appendChild(offDiv);
-        offDiv.style.cssText = 'position:fixed;top:-9999px;left:-9999px;';
-        new QRCode(offDiv, {
-          text: QR_URL, width: 220, height: 220,
-          colorDark: '#4A0E1A', colorLight: '#FFFCF5',
-          correctLevel: QRCode.CorrectLevel.M
-        });
-
-        const offStart = performance.now();
-        const poll = () => {
-          const freshCanvas = offDiv.querySelector('canvas');
-          const freshImg = offDiv.querySelector('img');
-          const node = freshCanvas || freshImg;
-          if (node) {
-            const ok = tryBuildFromNode(node);
-            document.body.removeChild(offDiv);
-            if (!ok) buildAndDownload(null);
-            return;
-          }
-          if (performance.now() - offStart > 2000) {
-            document.body.removeChild(offDiv);
-            buildAndDownload(null);
-            return;
-          }
-          requestAnimationFrame(poll);
-        };
-        poll();
-      } catch (e) {
-        buildAndDownload(null);
-      }
-    };
-
-    waitForInPageQR();
+    // Static QR image at QR_IMAGE_PATH — same-origin, so canvas isn't tainted.
+    const img = new Image();
+    img.onload = () => buildAndDownload(img);
+    img.onerror = () => buildAndDownload(null);
+    img.src = QR_IMAGE_PATH;
   }
 
   getQRAndBuild();
